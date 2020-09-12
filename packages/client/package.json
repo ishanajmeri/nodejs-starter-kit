@@ -37,6 +37,7 @@
     "author": "SysGears INC",
     "license": "MIT",
     "dependencies": {
+        "@ant-design/pro-layout": "5.0.0",
         "@apollo/react-hooks": "^3.0.0",
         "@fortawesome/fontawesome-free": "^5.8.1",
         "@fortawesome/fontawesome-svg-core": "^1.2.17",
