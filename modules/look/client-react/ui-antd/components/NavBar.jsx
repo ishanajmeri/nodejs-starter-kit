@@ -54,7 +54,7 @@ class NavBar extends React.Component {
           translateY: this.state.isMobile ? '' : '-40px'
         }}
       >
-        <Header className="no-print">
+        <Header className="no-print navbar-fullHeight">
           <Row className="navbar-wrapper">
             <Col lg={24} xs={0}>
               <div align="right" className="navbar-contact-menu">
