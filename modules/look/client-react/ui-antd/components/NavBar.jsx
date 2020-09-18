@@ -11,7 +11,7 @@ import DropDown from './Dropdown';
 
 const { SubMenu } = Menu;
 
-const ref = { modules: null };
+export const ref = { modules: null };
 
 const { Header } = Layout;
 
