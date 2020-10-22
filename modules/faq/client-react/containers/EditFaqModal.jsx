@@ -136,53 +136,35 @@ export default compose(
   translate('faqs')
 )(EditFaq);
 
-class EditFaqModal extends React.Component {
-  state = { visible: false };
-
-  showModal = () => {
-    this.setState({
-      visible: true
-    });
+const EditFaqModal = ({ editFaq, currentUser, faq, faqLoading }) => {
+  const [visible, setvisible] = React.useState(false);
+  const showModal = () => {
+    setvisible(true);
   };
 
-  handleOk = () => {
-    this.setState({
-      visible: false
-    });
+  const onSubmit = async values => {
+    try {
+      editFaq(values);
+      setvisible(false);
+    } catch (e) {
+      return e;
+    }
   };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false
-    });
-  };
-  render() {
-    const { editFaq, currentUser, faq, faqLoading } = this.props;
-
-    const onSubmit = async values => {
-      try {
-        editFaq(values);
-        this.setState({ visible: false });
-      } catch (e) {
-        return e;
-      }
-    };
-    return (
-      <>
-        <Icon type="edit" onClick={this.showModal} />
-        <Modal visible={this.state.visible} closable={false} footer={null}>
-          {faqLoading ? (
-            <div align="center">
-              <Spin />
-            </div>
-          ) : (
-            <FaqFormComponent faq={faq} cardTitle="Add Faq" onSubmit={onSubmit} currentUser={currentUser} />
-          )}
-        </Modal>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Icon type="edit" onClick={showModal} />
+      <Modal visible={visible} closable={false} footer={null}>
+        {faqLoading ? (
+          <div align="center">
+            <Spin />
+          </div>
+        ) : (
+          <FaqFormComponent faq={faq} cardTitle="Add Faq" onSubmit={onSubmit} currentUser={currentUser} />
+        )}
+      </Modal>
+    </>
+  );
+};
 
 EditFaqModal.propTypes = {
   editFaq: PropTypes.func,

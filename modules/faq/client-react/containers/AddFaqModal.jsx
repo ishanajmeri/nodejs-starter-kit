@@ -11,49 +11,32 @@ import ADD_FAQ from '../graphql/AddFaq.graphql';
 
 import FaqFormComponent from '../components/FaqFormComponent.web';
 
-class AddFaq extends React.Component {
-  state = { visible: false };
+const AddFaq = ({ buttonText, addFaq, currentUser }) => {
+  const [visible, setvisible] = React.useState(false);
 
-  showModal = () => {
-    this.setState({
-      visible: true
-    });
+  const showModal = () => {
+    setvisible(true);
   };
 
-  handleOk = () => {
-    this.setState({
-      visible: false
-    });
+  const onSubmit = async values => {
+    try {
+      addFaq(values);
+      setvisible(false);
+    } catch (e) {
+      return e;
+    }
   };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false
-    });
-  };
-  render() {
-    const { buttonText, addFaq, currentUser } = this.props;
-
-    const onSubmit = async values => {
-      try {
-        addFaq(values);
-        this.setState({ visible: false });
-      } catch (e) {
-        return e;
-      }
-    };
-    return (
-      <>
-        <Button icon="plus" onClick={this.showModal}>
-          {buttonText}
-        </Button>
-        <Modal visible={this.state.visible} closable={false} footer={null}>
-          <FaqFormComponent cardTitle="Add Faq" onSubmit={onSubmit} currentUser={currentUser} />
-        </Modal>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Button icon="plus" onClick={showModal}>
+        {buttonText}
+      </Button>
+      <Modal visible={visible} closable={false} footer={null}>
+        <FaqFormComponent cardTitle="Add Faq" onSubmit={onSubmit} currentUser={currentUser} />
+      </Modal>
+    </>
+  );
+};
 AddFaq.propTypes = {
   buttonText: PropTypes.string,
   addFaq: PropTypes.func,

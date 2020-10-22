@@ -20,7 +20,7 @@ import { RenderField, Button, RenderCheckBox } from '@gqlapp/look-client-react';
 //   // contactInfo: [required]
 // };
 
-const FaqFormComponent = ({ cardTitle, values, handleSubmit /*  setFieldValue, isAdminShow , t*/ }) => {
+const FaqFormComponent = ({ cardTitle, values, handleSubmit }) => {
   // const dateFormat = 'YYYY/MM/DD';
   // const onChangeDate = value => {
   //   setFieldValue('date', value.format(dateFormat));

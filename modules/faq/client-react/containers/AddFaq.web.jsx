@@ -9,12 +9,9 @@ import ADD_FAQ from '../graphql/AddFaq.graphql';
 
 import AddFaqView from '../components/AddFaqView.web';
 
-class AddFaq extends React.Component {
-  render() {
-    // console.log('props', this.props);
-    return <AddFaqView {...this.props} />;
-  }
-}
+const AddFaq = props => {
+  return <AddFaqView {...props} />;
+};
 
 export default compose(
   graphql(ADD_FAQ, {
