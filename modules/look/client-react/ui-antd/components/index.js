@@ -81,3 +81,7 @@ export { default as TreeNode } from './TreeNode';
 export { default as TreeSelect } from './TreeSelect';
 
 export { onAppCreate } from './NavBar';
+export { default as Loader } from './Loader';
+export { default as CatalogueWithInfiniteScroll } from './CatalogueWithInfiniteScroll';
+export { default as PageLoading } from './PageLoading';
+export { default as RenderTableLoading } from './RenderTableLoading';

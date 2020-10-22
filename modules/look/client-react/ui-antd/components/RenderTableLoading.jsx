@@ -1,0 +1,35 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+import { Skeleton, Table } from 'antd';
+
+const RenderTableLoading = ({ rows, columns }) => {
+  const loadingColumn = {
+    title: <a href="#">{'...'}</a>,
+    dataIndex: 'id',
+    key: 'id',
+    // sorter: (a, b) => a.id - b.id,
+    // sortDirections: ["descend", "ascend"],
+    // eslint-disable-next-line react/display-name
+    render: (/* text, record */) => (
+      <>
+        <Skeleton paragraph={{ rows: 0 }} active />
+      </>
+    )
+  };
+
+  return (
+    <Table
+      dataSource={[...Array(rows).keys()]}
+      columns={[...Array(columns).keys()].map(() => {
+        return loadingColumn;
+      })}
+    />
+  );
+};
+RenderTableLoading.propTypes = {
+  rows: PropTypes.number,
+  columns: PropTypes.number
+};
+
+export default RenderTableLoading;

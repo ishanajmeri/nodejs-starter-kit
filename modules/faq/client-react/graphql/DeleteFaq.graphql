@@ -1,0 +1,7 @@
+#import "./Faq.graphql"
+
+mutation deleteFaq($id: Int!) {
+  deleteFaq(id: $id) {
+    ...FaqInfo
+  }
+}
