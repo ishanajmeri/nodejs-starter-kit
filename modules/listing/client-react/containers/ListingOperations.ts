@@ -556,8 +556,18 @@ export const withFilterUpdating = (Component: FunctionComponent) =>
       onFiltersRemove(filter: FilterListInput, orderBy: OrderByListInput) {
         mutate({
           variables: {
-            filter,
-            orderBy
+            filter: {
+              ...filter,
+              categoryFilter: {
+                ...filter.categoryFilter,
+                __typename: 'CategoryFilter'
+              },
+              __typename: 'FilterListInput'
+            },
+            orderBy: {
+              ...orderBy,
+              __typename: 'OrderByListInput'
+            }
           }
         });
       }

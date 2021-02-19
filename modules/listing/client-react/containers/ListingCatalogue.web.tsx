@@ -16,7 +16,7 @@ import { withListingsState, withFilterUpdating, withOrderByUpdating, withListing
 import ROUTES from '../routes';
 
 // types
-import { FilterListInput } from '../../../../packages/server/__generated__/globalTypes';
+import { FilterListInput, OrderByListInput } from '../../../../packages/server/__generated__/globalTypes';
 import { listings_listings as Listings } from '../graphql/__generated__/listings';
 import { getCart_getCart as GetCart } from '@gqlapp/order-client-react/graphql/__generated__/getCart';
 
@@ -28,6 +28,17 @@ export interface ListingsCatalogueProps {
   currentUser: CurrentUser;
   getCart: GetCart;
   filter: FilterListInput;
+  onLowerCostChange: (cost: number) => void;
+  onUpperCostChange: (cost: number) => void;
+  onCategoryChange: ({ categoryId, allSubCategory }: { categoryId: number; allSubCategory: boolean }) => void;
+  onFiltersRemove: (filter: FilterListInput, orderBy: OrderByListInput) => void;
+  onBrandChange: (brand: string[]) => void;
+  onSearchTextChange: (serachText: string) => void;
+  onRoleChange: (role: string) => void;
+  onIsActiveChange: (active: boolean) => void;
+  onDiscountChange: (discount: number) => void;
+  onRatedChange: (rated: number) => void;
+  onOrderBy: (orderBy: OrderByListInput) => void;
   loadData: (endCursor: number, action: string) => { data: { listings: Listings } };
   deleteOrderDetail: (id: number) => void;
   subscribeToMore: (options: SubscribeToMoreOptions) => () => void;

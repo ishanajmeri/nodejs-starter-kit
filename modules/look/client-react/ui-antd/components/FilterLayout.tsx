@@ -19,11 +19,11 @@ import Col from './Col';
 import Button from './Button';
 import Card from './Card';
 
-const HideMobile = styled.div`
-  @media screen and (max-width: 780px) {
-    display: none;
-  }
-`;
+// const HideMobile = styled.div`
+//   @media screen and (max-width: 780px) {
+//     display: none;
+//   }
+// `;
 
 const MarginBtm = styled.div`
   margin-bottom: 5px;

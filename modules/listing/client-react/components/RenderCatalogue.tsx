@@ -10,6 +10,7 @@ import ListingFilterComponent from './ListingFilterComponent.web';
 import { listing_listing as Listing } from '../graphql/__generated__/listing';
 import { listings_listings as Listings } from '../graphql/__generated__/listings';
 import { currentUser_currentUser as CurrentUser } from '@gqlapp/user-client-react/graphql/__generated__/currentUser';
+import { FilterListInput, OrderByListInput } from '../../../../packages/server/__generated__/globalTypes';
 
 export interface RenderCatalogueProps {
   loading: boolean;
@@ -19,6 +20,8 @@ export interface RenderCatalogueProps {
   history: History;
   currentUser: CurrentUser;
   listings: Listings;
+  // onFiltersRemove: (filter: FilterListInput, orderBy: OrderByListInput) => void;
+  filterFuncs: object;
   renderFunc: (key: number, listing: Listing) => JSX.Element;
   loadData: (endCursor: number, action: string) => { data: { listings: Listings } };
   onDelete: (id: number) => void;
@@ -26,7 +29,7 @@ export interface RenderCatalogueProps {
 }
 
 const RenderCatalogue: React.FC<RenderCatalogueProps> = props => {
-  const { t, showFilter, renderFunc, loadData, layout, loading, listings, emptyLink } = props;
+  const { t, showFilter, renderFunc, loadData, layout, loading, listings, emptyLink, filterFuncs } = props;
   const span =
     layout === 'vertical'
       ? {
@@ -64,7 +67,13 @@ const RenderCatalogue: React.FC<RenderCatalogueProps> = props => {
       <Col {...span.spanFilter}>
         {layout !== 'vertical' && <br />}
         {showFilter && (
-          <ListingFilterComponent showIsActive={false} filter={{ isActive: true }} orderBy={{}} {...props} />
+          <ListingFilterComponent
+            showIsActive={false}
+            filter={{ isActive: true }}
+            orderBy={{}}
+            {...filterFuncs}
+            {...props}
+          />
         )}
       </Col>
       <Col {...span.spanContent}>

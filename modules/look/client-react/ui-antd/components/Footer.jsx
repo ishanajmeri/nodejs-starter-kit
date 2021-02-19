@@ -134,7 +134,12 @@ class Footer extends React.Component {
               children: [
                 {
                   name: 'content0',
-                  children: 'An all js stater-kit for all app needs.'
+                  children: (
+                    <>
+                      <br />
+                      {'An all js stater-kit for all app needs.'}
+                    </>
+                  )
                 },
                 {
                   name: 'content0',

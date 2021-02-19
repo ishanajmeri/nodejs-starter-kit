@@ -23,6 +23,17 @@ export interface ListingCatalogueViewProps extends ListingsCatalogueProps {
 const ListingCatalogueView: React.FC<ListingCatalogueViewProps> = props => {
   const {
     t,
+    onLowerCostChange,
+    onUpperCostChange,
+    onCategoryChange,
+    onFiltersRemove,
+    onBrandChange,
+    onSearchTextChange,
+    onRoleChange,
+    onIsActiveChange,
+    onDiscountChange,
+    onRatedChange,
+    onOrderBy,
     loading,
     showFilter,
     listings,
@@ -86,6 +97,19 @@ const ListingCatalogueView: React.FC<ListingCatalogueViewProps> = props => {
         renderFunc={renderFunc}
         loadData={loadData}
         onDelete={onDelete}
+        filterFuncs={{
+          onLowerCostChange,
+          onUpperCostChange,
+          onCategoryChange,
+          onFiltersRemove,
+          onBrandChange,
+          onSearchTextChange,
+          onRoleChange,
+          onIsActiveChange,
+          onDiscountChange,
+          onRatedChange,
+          onOrderBy
+        }}
         t={t}
       />
     </PageLayout>

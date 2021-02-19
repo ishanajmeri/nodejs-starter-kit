@@ -64,8 +64,8 @@ const MyOrdersView: React.FC<MyOrdersViewProps> = props => {
             sm: 1,
             md: 3,
             lg: 4,
-            xl: 6,
-            xxl: 6
+            xl: 5,
+            xxl: 5
           }}
           endText={'orders'}
           {...props}
