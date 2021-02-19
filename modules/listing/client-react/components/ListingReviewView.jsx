@@ -22,8 +22,8 @@ const ListingReviewView = props => {
       </Heading>
       {loading && <Spinner />}
       {!loading && (
-        <Row gutter={24}>
-          <Col lg={8}>
+        <Row gutter={40}>
+          <Col lg={6}>
             <RelatedCardComponent
               listing={listing}
               history={history}
@@ -35,7 +35,7 @@ const ListingReviewView = props => {
               onDelete={() => onDelete(cartItemArray[0].id)}
             />
           </Col>
-          <Col lg={16}>
+          <Col lg={18}>
             {listing && (
               <Review
                 filter={{
