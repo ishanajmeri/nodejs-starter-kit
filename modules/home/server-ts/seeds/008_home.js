@@ -46,6 +46,16 @@ const IMG_TAB_BANNER = [
     label: 'Tab1',
     image_url: 'https://res.cloudinary.com/nodejs-starter-kit/image/upload/v1609070618/yucs8ynapg4rlbzgbewv.webp'
   },
+  {
+    title: 'ROCKET BONG BOX',
+    label: 'Tab1',
+    image_url: 'https://res.cloudinary.com/nodejs-starter-kit/image/upload/v1609070467/mfue95aorx0oagxfou1r.webp'
+  },
+  {
+    title: 'JELLY FISH BONG BOX',
+    label: 'Tab1',
+    image_url: 'https://res.cloudinary.com/nodejs-starter-kit/image/upload/v1609070400/mewcajc4vgsup8vwe7y9.webp'
+  },
 
   {
     title: 'JELLY FISH BONG BOX',
@@ -77,13 +87,21 @@ const IMG_TAB_BANNER = [
     label: 'Tab2',
     image_url: 'https://res.cloudinary.com/nodejs-starter-kit/image/upload/v1609070753/sd8s5c3xri6zxkd1wdfa.webp'
   },
-
+  {
+    title: 'RECYCLER RIG BOX',
+    label: 'Tab2',
+    image_url: 'https://res.cloudinary.com/nodejs-starter-kit/image/upload/v1609070705/osm0ivcxyusf659jlgh3.webp'
+  },
   {
     title: 'ONE LOVE BOX',
     label: 'Tab2',
     image_url: 'https://res.cloudinary.com/nodejs-starter-kit/image/upload/v1609070775/qao7cjlmrnqhnwweke64.webp'
   },
-
+  {
+    title: 'SPACE CAR BONG BOX',
+    label: 'Tab2',
+    image_url: 'https://res.cloudinary.com/nodejs-starter-kit/image/upload/v1609070728/jp5phrvyrvmzslcq5vwa.webp'
+  },
   {
     title: 'SHARK RIG BOX',
     label: 'Tab2',
