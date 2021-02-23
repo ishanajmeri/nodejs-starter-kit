@@ -1,13 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { Row, Col, Heading, Icon, PageLayout, Spinner, MetaTags } from '@gqlapp/look-client-react';
 import { Review } from '@gqlapp/review-client-react';
 import { MODAL } from '@gqlapp/review-common';
 
 import RelatedCardComponent from './RelatedCardComponent';
+// types
+import { ListingReviewProps } from '../containers/ListingReview';
 
-const ListingReviewView = props => {
+interface ListingReviewViewProps extends ListingReviewProps {
+  onDelete: (id: number) => void;
+}
+
+const ListingReviewView: React.FunctionComponent<ListingReviewViewProps> = props => {
   const { loading, cartLoading, t, onDelete, history, getCart, listing, canUserReview, currentUser } = props;
   const cartItemArray =
     getCart && getCart.orderDetails && getCart.orderDetails.length > 0
@@ -53,18 +58,6 @@ const ListingReviewView = props => {
       )}
     </PageLayout>
   );
-};
-
-ListingReviewView.propTypes = {
-  loading: PropTypes.bool,
-  cartLoading: PropTypes.bool,
-  t: PropTypes.func,
-  onDelete: PropTypes.func,
-  listing: PropTypes.object,
-  canUserReview: PropTypes.bool,
-  currentUser: PropTypes.object,
-  history: PropTypes.object,
-  getCart: PropTypes.object
 };
 
 export default ListingReviewView;
