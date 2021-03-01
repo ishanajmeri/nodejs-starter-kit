@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Heading, Row, Col } from '@gqlapp/look-client-react';
 
 import settings from '@gqlapp/config';
-import ListingItemComponent from './CartItemComponent';
+import CartItemComponent from './CartItemComponent';
 
 // const ALL = 'All';
 // const MYLISTING = 'My Delivery';
@@ -65,12 +65,7 @@ class MyListingsView extends Component {
           {orders &&
             orders.map(order =>
               order.delivery.map(item => (
-                <ListingItemComponent
-                  history={history}
-                  item={item}
-                  deleteProduct={delListing}
-                  currentUser={currentUser}
-                />
+                <CartItemComponent history={history} item={item} deleteProduct={delListing} currentUser={currentUser} />
               ))
             )}
         </>

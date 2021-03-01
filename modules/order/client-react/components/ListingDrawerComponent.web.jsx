@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Drawer } from '@gqlapp/look-client-react';
-import ListingItemComponent from './CartItemComponent';
+import CartItemComponent from './CartItemComponent';
 
 // const pStyle = {
 //   fontSize: 16,
@@ -56,7 +56,7 @@ export default class ListingDrawerComponent extends Component {
         <a onClick={this.showDrawer}>View Listing</a>
         <Drawer width={640} placement="right" closable={false} onClose={this.onClose} visible={this.state.visible}>
           {listing.map(item => (
-            <ListingItemComponent
+            <CartItemComponent
               t={t}
               // history={history}
               item={item}

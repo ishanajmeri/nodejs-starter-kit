@@ -13,14 +13,19 @@ import {
 // eslint-disable-next-line import/no-named-default
 import { LISTING_ROUTES } from '@gqlapp/listing-client-react';
 
-import { Reviews, Review } from '../containers/Reviews.web';
 import ReviewsItemComponent from './ReviewsItemComponent';
 import AvgRatingComponent from './AvgRatingComponent';
 import ReviewFormComponent from './ReviewFormComponent';
 
-interface ReviewViewProps {
+// types
+import { reviews_reviews as Reviews } from '../graphql/__generated__/reviews';
+import { review_review as Review } from '../graphql/__generated__/review';
+import { listing_listing as Listing } from '@gqlapp/listing-client-react/graphql/__generated__/listing';
+
+export interface ReviewViewProps {
   t: TranslateFunction;
   filter: {
+    isActive: boolean;
     modalName: string;
     modalId: number;
   };
@@ -40,6 +45,7 @@ interface ReviewViewProps {
   addReview: () => null;
   deleteReview: (id: number) => null;
   handleHelpful: (id: number, value: number) => Promise<void>;
+  listing: Listing;
 }
 
 const ReviewView: React.FC<ReviewViewProps> = props => {
@@ -144,10 +150,12 @@ const ReviewView: React.FC<ReviewViewProps> = props => {
             <RenderReviews />
           ) : (
             !loading && (
-              <EmptyComponent
-                description={t('adminPanel.noReviewsMsg')}
-                emptyLink={`${LISTING_ROUTES.listingCatalogue}`}
-              />
+              <div style={{ paddingTop: '35px' }}>
+                <EmptyComponent
+                  description={t('adminPanel.noReviewsMsg')}
+                  emptyLink={`${LISTING_ROUTES.listingCatalogue}`}
+                />
+              </div>
             )
           )}
         </Col>

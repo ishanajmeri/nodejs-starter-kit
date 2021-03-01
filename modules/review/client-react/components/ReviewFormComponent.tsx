@@ -24,7 +24,9 @@ import { MODAL } from '@gqlapp/review-common';
 import { TranslateFunction } from '@gqlapp/i18n-client-react';
 
 import UserAutoCompleteComponent from './UserAutoCompleteComponent';
-import { Review } from '../containers/Reviews.web';
+// types
+import { review_review as Review } from '../graphql/__generated__/review';
+import { listing_listing as Listing } from '@gqlapp/listing-client-react/graphql/__generated__/listing';
 
 const ReviewFormSchema = { rating: [required], feedback: [required] };
 
@@ -60,6 +62,7 @@ export interface ReviewFormComponentProps {
   onSearchTextChange: () => null;
   handleSubmit: () => null;
   setFieldValue: (field: string, value: string | number) => null;
+  listing: Listing;
 }
 
 const ReviewFormComponent: React.FC<ReviewFormComponentProps> = props => {

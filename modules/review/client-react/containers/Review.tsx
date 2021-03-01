@@ -13,7 +13,8 @@ import {
   withReviewsDeleting,
   withToogleReviewHelpful
 } from './ReviewOperations';
-interface ReviewProps {
+import { ReviewViewProps } from '../components/ReviewView';
+interface ReviewProps extends ReviewViewProps {
   t: TranslateFunction;
   filter: {
     isActive: boolean;

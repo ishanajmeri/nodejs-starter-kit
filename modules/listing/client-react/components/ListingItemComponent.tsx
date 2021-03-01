@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { PropTypes } from 'prop-types';
 import { compose } from '@gqlapp/core-common';
 
 import { NO_IMG } from '@gqlapp/listing-common';
@@ -13,24 +12,34 @@ import { MODAL } from '@gqlapp/review-common';
 import { useImageLoaded } from './functions';
 import ROUTES from '../routes';
 import RelatedCardSkeleton from './RelatedCardSkeleton';
-
+// types
+import { MyListingsContainerProps } from '../containers/MyListingsContainer';
+import { listing_listing as Listing } from '../graphql/__generated__/listing';
+import { modalDiscount_modalDiscount } from '@gqlapp/discount-client-react/graphql/__generated__/modalDiscount';
 const ListingWraper = styled.div`
   position: relative;
 `;
 
-const ListingItemComponent = props => {
+interface ListingItemComponentProps extends MyListingsContainerProps {
+  item: Listing;
+  componentStyle: object;
+  deleteProduct: (id: number) => void;
+  modalDiscount: modalDiscount_modalDiscount;
+}
+
+const ListingItemComponent: React.FunctionComponent<ListingItemComponentProps> = props => {
   const [ref, loaded, onLoad] = useImageLoaded();
   const { item: listing, deleteProduct, componentStyle, modalDiscount, currentUser } = props;
 
   const now = new Date().toISOString();
-  const listing_id = listing && listing.id;
-  const listing_is_new = listing && listing.listingFlags && listing.listingFlags.isNew;
-  const listing_media =
+  const listingId = listing && listing.id;
+  const listingIsNew = listing && listing.listingFlags && listing.listingFlags.isNew;
+  const listingMedia =
     listing &&
     listing.listingMedia &&
     listing.listingMedia.length > 0 &&
     listing.listingMedia.filter(lM => lM.type === 'image');
-  const listing_img = listing_media && listing_media.length > 0 ? listing_media[0].url : NO_IMG;
+  const listingImg = listingMedia && listingMedia.length > 0 ? listingMedia[0].url : NO_IMG;
   const startDate = modalDiscount && modalDiscount.discountDuration && modalDiscount.discountDuration.startDate;
   const endDate = modalDiscount && modalDiscount.discountDuration && modalDiscount.discountDuration.endDate;
   const isDiscountPercent =
@@ -48,18 +57,18 @@ const ListingItemComponent = props => {
   const cost =
     listing && listing.listingCostArray && listing.listingCostArray.length > 0 && listing.listingCostArray[0].cost;
 
-  const cardImg = listing_img && (
+  const cardImg = listingImg && (
     <img
       ref={ref}
       onLoad={onLoad}
-      src={listing_img}
+      src={listingImg}
       style={{
         width: '100%'
       }}
     />
   );
   const listingCard = (
-    <Link className="listing-link" to={`${ROUTES.listingDetailLink}${listing_id}`}>
+    <Link className="listing-link" to={`${ROUTES.listingDetailLink}${listingId}`}>
       <Card
         bodyStyle={{ margin: '0px', padding: '14px', textAlign: 'left' }}
         hoverable
@@ -114,7 +123,7 @@ const ListingItemComponent = props => {
         {startDate <= now && endDate >= now ? (
           <h4>
             Deal ends in:{' '}
-            {Math.round((new Date(endDate) - new Date()) / (1000 * 60 * 60 * 24)) !== 0
+            {Math.round((((new Date(endDate) as number) - new Date()) as number) / (1000 * 60 * 60 * 24)) !== 0
               ? ` ${Math.round((new Date(endDate) - new Date()) / (1000 * 60 * 60 * 24))} days`
               : Math.round((new Date(endDate) - new Date()) / (1000 * 60 * 60)) !== 0
               ? ` ${Math.round((new Date(endDate) - new Date()) / (1000 * 60 * 60))} hours`
@@ -171,16 +180,16 @@ const ListingItemComponent = props => {
         >
           <Row type="flex" gutter={[24, 4]}>
             <Col span={24}>
-              <Link to={`${ROUTES.editLink}${listing_id}`}>
+              <Link to={`${ROUTES.editLink}${listingId}`}>
                 <EditButton color="primary" size="lg" />
               </Link>
             </Col>
             <Col span={24}>
-              <DeleteButton onClick={() => deleteProduct(listing_id)} size="lg" />
+              <DeleteButton onClick={() => deleteProduct(listingId)} size="lg" />
             </Col>
           </Row>
         </div>
-        {listing_is_new ? (
+        {listingIsNew ? (
           <Ribbon placement={'start'} text={'New'}>
             {listingCard}
           </Ribbon>
@@ -190,17 +199,6 @@ const ListingItemComponent = props => {
       </ListingWraper>
     </>
   );
-};
-
-ListingItemComponent.propTypes = {
-  item: PropTypes.object,
-  currentUser: PropTypes.object,
-  deleteProduct: PropTypes.func,
-  history: PropTypes.object,
-  loading: PropTypes.bool,
-  componentStyle: PropTypes.object,
-  modalDiscount: PropTypes.object,
-  t: PropTypes.func
 };
 
 export default compose(withModalDiscount)(ListingItemComponent);
