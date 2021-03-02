@@ -145,7 +145,7 @@ class Footer extends React.Component {
                   name: 'content0',
                   children: (
                     <h1 style={{ fontSize: '25px', color: 'white' }}>
-                      <div align="center" className="row" style={{ display: 'flex' }}>
+                      <div className="row" style={{ display: 'flex' }}>
                         <Container
                           href={platform && platform.platformSocial && platform.platformSocial.facebook}
                           target="_blank"

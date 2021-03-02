@@ -5,10 +5,11 @@ import { NextButton, Col, Row, Card, Divider, RenderSelect, Option, Icon, Space 
 import { FieldAdapter as Field } from '@gqlapp/forms-client-react';
 import { MODAL } from '@gqlapp/review-common';
 import { TranslateFunction } from '@gqlapp/i18n-client-react';
-import { displayDataCheck } from '@gqlapp/listing-client-react';
+import { displayDataCheck, SocialSharingButtons } from '@gqlapp/listing-client-react';
 import { IfLoggedIn } from '@gqlapp/user-client-react';
 import { UserRoleObject } from '@gqlapp/user-common/';
-
+import { OrderShareMessage } from '@gqlapp/order-common/SocialSharingMessage';
+// import { SocialSharingButtons } from '@gqlapp/listing-client-react/components/SocialSharingButtons'
 import CartItemComponent from './CartItemComponent';
 import { TotalPrice } from './function';
 
@@ -52,6 +53,16 @@ const CheckoutCardComponent: React.FC<CheckoutCardComponentProps> = props => {
     showState,
     t
   } = props;
+  const message: {
+    whatsappMessage: string;
+    twitterMessage: {
+      text: string;
+      hashtag: string;
+      link: string;
+    };
+    link: string;
+    emailMessage: string;
+  } = order && OrderShareMessage(order.id, 'order.user.username', 'order.title');
   const Icons = [
     <Icon type="AppstoreOutlined" />,
     <Icon type="HddOutlined" />,
@@ -63,50 +74,59 @@ const CheckoutCardComponent: React.FC<CheckoutCardComponentProps> = props => {
   return (
     <Card align="left" style={{ height: '100%' }}>
       <Row>
-        <Col span={12}>
+        <Col span={6}>
           <h3 className="OrderHead">{t('checkoutCard.orderSummary')}</h3>
         </Col>
         {showState && (
-          <Col span={12} align="right">
-            <IfLoggedIn
-              role={UserRoleObject.admin}
-              elseComponent={
-                <h3>
-                  <StatusText status={order.orderState && order.orderState.state.toLowerCase()}>
-                    {order.orderState && displayDataCheck(order.orderState.state)}
-                  </StatusText>
-                </h3>
-              }
-            >
-              <Space align="center">
-                <div align="left">
-                  {orderStates && orderStates.length !== 0 && (
-                    <Field
-                      name="Order state"
-                      icon={'AimOutlined'}
-                      component={RenderSelect}
-                      placeholder={t('orders.column.state')}
-                      defaultValue={order.orderState.state}
-                      onChange={(e: string) => onPatchOrderState(order.id, e)}
-                      label={t('orders.column.state')}
-                      style={{ width: '100px' }}
-                      value={order.orderState.state}
-                      inFilter={true}
-                      noBotMarging={true}
-                      selectStyle={{ width: '100%' }}
-                    >
-                      {orderStates.map((oS, i) => (
-                        <Option key={i + 2} value={oS.state}>
-                          {Icons[i + 1]} &nbsp;
-                          {oS.state}
-                        </Option>
-                      ))}
-                    </Field>
-                  )}
+          <Col span={18}>
+            <Row>
+              <Col lg={22} align="right">
+                <IfLoggedIn
+                  role={UserRoleObject.admin}
+                  elseComponent={
+                    <h3>
+                      <StatusText status={order.orderState && order.orderState.state.toLowerCase()}>
+                        {order.orderState && displayDataCheck(order.orderState.state)}
+                      </StatusText>
+                    </h3>
+                  }
+                >
+                  <Space align="center">
+                    <div align="left">
+                      {orderStates && orderStates.length !== 0 && (
+                        <Field
+                          name="Order state"
+                          icon={'AimOutlined'}
+                          component={RenderSelect}
+                          placeholder={t('orders.column.state')}
+                          defaultValue={order.orderState.state}
+                          onChange={(e: string) => onPatchOrderState(order.id, e)}
+                          label={t('orders.column.state')}
+                          style={{ width: '100px' }}
+                          value={order.orderState.state}
+                          inFilter={true}
+                          noBotMarging={true}
+                          selectStyle={{ width: '100%' }}
+                        >
+                          {orderStates.map((oS, i) => (
+                            <Option key={i + 2} value={oS.state}>
+                              {Icons[i + 1]} &nbsp;
+                              {oS.state}
+                            </Option>
+                          ))}
+                        </Field>
+                      )}
+                    </div>
+                    <OrderStatusMail orderId={order.id} disabled={order.orderState.state !== ORDER_STATES.DISPATCHED} />
+                  </Space>
+                </IfLoggedIn>
+              </Col>
+              <Col lg={2} align="right">
+                <div style={{ paddingTop: '5px' }}>
+                  <SocialSharingButtons /* onShare={onShare} */ t={t} {...message} />
                 </div>
-                <OrderStatusMail orderId={order.id} disabled={order.orderState.state !== ORDER_STATES.DISPATCHED} />
-              </Space>
-            </IfLoggedIn>
+              </Col>
+            </Row>
           </Col>
         )}
       </Row>

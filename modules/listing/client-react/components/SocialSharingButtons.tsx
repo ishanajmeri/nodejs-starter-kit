@@ -34,7 +34,7 @@ export interface SocialSharingButtonsProps {
     link: string;
   };
   link: string;
-  onShare: (values: ShareListingByEmailInput) => void;
+  onShare?: (values: ShareListingByEmailInput) => void;
   emailMessage: string;
   t: TranslateFunction;
 }
