@@ -1,8 +1,8 @@
 import React from 'react';
-import { Row, Col, Rate, Progress } from '@gqlapp/look-client-react';
-
-import { PropTypes } from 'prop-types';
 import styled from 'styled-components';
+
+import { Row, Col, Rate, Progress } from '@gqlapp/look-client-react';
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 
 const Rating = styled(Rate)`
   font-size: 12px;
@@ -14,11 +14,23 @@ const TotalRating = styled.h3`
   }
 `;
 
-export function avgRating(five, four, three, two, one, totalRatings) {
+export function avgRating(five: number, four: number, three: number, two: number, one: number, totalRatings: number) {
   return ((5 * five + 4 * four + 3 * three + 2 * two + 1 * one) / totalRatings).toFixed(1);
 }
 
-const AvgRatingComponent = props => {
+interface AvgRatingComponentProps {
+  t: TranslateFunction;
+  rating: {
+    id: number;
+    one: number;
+    two: number;
+    three: number;
+    four: number;
+    five: number;
+  };
+}
+
+const AvgRatingComponent: React.FunctionComponent<AvgRatingComponentProps> = props => {
   const { t } = props;
   const { one, two, three, four, five } = props.rating;
   const totalRatings = one + two + three + four + five;
@@ -49,7 +61,15 @@ const AvgRatingComponent = props => {
       value: one
     }
   ];
-  const AvrgComponent = ({ defaultValue, percent, value }) => (
+  const AvrgComponent = ({
+    defaultValue,
+    percent,
+    value
+  }: {
+    defaultValue: number;
+    percent: number;
+    value: number;
+  }) => (
     <Row>
       <Col span={22}>
         <Row>
@@ -69,13 +89,6 @@ const AvgRatingComponent = props => {
     </Row>
   );
 
-  AvrgComponent.propTypes = {
-    defaultValue: PropTypes.number,
-    percent: PropTypes.number,
-    value: PropTypes.number
-  };
-
-  // console.log('props', totalRatings * 5, one + two * 2 + three * 3 + four * 4 + five * 5);
   return (
     <Row>
       <Col lg={3} xs={6}>
@@ -101,11 +114,6 @@ const AvgRatingComponent = props => {
       </Col>
     </Row>
   );
-};
-
-AvgRatingComponent.propTypes = {
-  rating: PropTypes.object,
-  t: PropTypes.func
 };
 
 export default AvgRatingComponent;

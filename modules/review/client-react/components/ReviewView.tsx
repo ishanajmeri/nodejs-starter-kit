@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import {
   Heading,
@@ -36,11 +37,11 @@ export interface ReviewViewProps {
   currentUser: object;
   ratingAverage: {
     id: number;
-    one: string;
-    two: string;
-    three: string;
-    four: string;
-    five: string;
+    one: number;
+    two: number;
+    three: number;
+    four: number;
+    five: number;
   };
   addReview: () => null;
   deleteReview: (id: number) => null;
