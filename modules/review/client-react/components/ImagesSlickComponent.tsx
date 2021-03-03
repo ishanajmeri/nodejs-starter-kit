@@ -1,13 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Row, Col, SlickCarousel } from '@gqlapp/look-client-react';
+// types
+import { review_review_reviewMedia as ReviewMedia } from '../graphql/__generated__/review';
 
-const ImagesSlickComponent = props => {
+interface ImagesSlickComponentProps {
+  images: ReviewMedia;
+}
+
+const ImagesSlickComponent: React.FunctionComponent<ImagesSlickComponentProps> = props => {
   const { images } = props;
   // console.log('props', props);
   const itemLength = images && images.length;
 
-  const SlickComponent = ({ img }) => (
+  const SlickComponent = ({ img }: { img: ReviewMedia }) => (
     <Row align="middle" type="flex" justify="center">
       <Col span={24}>
         {img.type === 'image' ? (
@@ -28,7 +33,7 @@ const ImagesSlickComponent = props => {
     </Row>
   );
 
-  const carouselSettings = itemLength => {
+  const carouselSettings = (ItemLength: number) => {
     return {
       className: 'slider variable-width',
       variableWidth: true,
@@ -37,7 +42,7 @@ const ImagesSlickComponent = props => {
       infinite: true,
       speed: 500,
       autoplaySpeed: 2000,
-      slidesToShow: itemLength >= 4 ? 4 : itemLength,
+      slidesToShow: ItemLength >= 4 ? 4 : ItemLength,
       slidesToScroll: 1,
       swipeToSlide: true,
 
@@ -47,21 +52,21 @@ const ImagesSlickComponent = props => {
         {
           breakpoint: 1440,
           settings: {
-            slidesToShow: itemLength >= 4 ? 4 : itemLength,
+            slidesToShow: ItemLength >= 4 ? 4 : ItemLength,
             slidesToScroll: 1
           }
         },
         {
           breakpoint: 1024,
           settings: {
-            slidesToShow: itemLength >= 3 ? 3 : itemLength,
+            slidesToShow: ItemLength >= 3 ? 3 : ItemLength,
             slidesToScroll: 1
           }
         },
         {
           breakpoint: 768,
           settings: {
-            slidesToShow: itemLength >= 2 ? 2 : itemLength,
+            slidesToShow: ItemLength >= 2 ? 2 : ItemLength,
             slidesToScroll: 1
           }
         },
@@ -92,9 +97,4 @@ const ImagesSlickComponent = props => {
     />
   ) : null;
 };
-ImagesSlickComponent.propTypes = {
-  images: PropTypes.array,
-  img: PropTypes.obj
-};
-
 export default ImagesSlickComponent;

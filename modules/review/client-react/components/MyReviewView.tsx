@@ -1,6 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { History } from 'history';
 
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import { MODAL } from '@gqlapp/review-common';
 import { FieldAdapter as Field } from '@gqlapp/forms-client-react';
 import {
@@ -18,11 +19,26 @@ import {
 
 import ReviewsItemComponent from './ReviewsItemComponent';
 import ROUTES from '../routes/index';
+// types
+import { currentUser_currentUser as CurrentUser } from '@gqlapp/user-client-react/graphql/__generated__/currentUser';
+import { reviews_reviews as Reviews } from '../graphql/__generated__/reviews';
+import { review_review as Review } from '../graphql/__generated__/review';
 
-const MyReviewView = props => {
+export interface MyReviewViewProps {
+  t: TranslateFunction;
+  loading: boolean;
+  currentUser: CurrentUser;
+  history: History;
+  ModalName: string;
+  reviews: Reviews;
+  deleteReview: (id: number) => void;
+  setModalName: (e: string) => void;
+}
+
+const MyReviewView: React.FunctionComponent<MyReviewViewProps> = props => {
   const { t, reviews, loading, setModalName, deleteReview, currentUser, history, ModalName } = props;
 
-  const renderFunc = (key, review) => (
+  const renderFunc = (key: number, review: Review) => (
     <ReviewsItemComponent
       t={t}
       key={key}
@@ -124,14 +140,5 @@ const MyReviewView = props => {
     </>
   );
 };
-MyReviewView.propTypes = {
-  t: PropTypes.func,
-  setModalName: PropTypes.func,
-  deleteReview: PropTypes.func,
-  reviews: PropTypes.object,
-  currentUser: PropTypes.object,
-  history: PropTypes.object,
-  loading: PropTypes.bool,
-  ModalName: PropTypes.string
-};
+
 export default MyReviewView;

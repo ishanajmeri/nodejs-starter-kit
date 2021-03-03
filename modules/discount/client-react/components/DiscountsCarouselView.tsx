@@ -1,4 +1,5 @@
 import React from 'react';
+import { History } from 'history';
 
 import { ListingCarousel } from '@gqlapp/listing-client-react';
 import { DiscountsCarouselProps } from '../containers/DiscountsCarousel';

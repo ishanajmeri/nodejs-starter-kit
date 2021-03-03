@@ -2,15 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { compose } from '@gqlapp/core-common';
-import { PropTypes } from 'prop-types';
 import { Icon, Row, Col, Card, Rate, Button, DropDown, MenuItem } from '@gqlapp/look-client-react';
 import { USER_ROUTES } from '@gqlapp/user-client-react';
 import { LISTING_ROUTES, displayDataCheck } from '@gqlapp/listing-client-react';
 
 import { withReviewHelpfulStatus } from '../containers/ReviewOperations';
 import ImagesSlickComponent from './ImagesSlickComponent';
-import ROUTES from '../routes';
 import { displayDateCheck } from './functions';
+import ROUTES from '../routes';
+
+// types
+import { MyReviewViewProps } from './MyReviewView';
+import { review_review as Review } from '../graphql/__generated__/review';
 
 const Avatar = styled.img`
   border-radius: 50%;
@@ -48,7 +51,15 @@ const ReviewModala = styled.a`
   }
 `;
 
-const ReviewsItemComponent = props => {
+interface ReviewsItemComponentProps extends MyReviewViewProps {
+  review: Review;
+  showModal: boolean;
+  reviewHelpfulStatus: boolean;
+  showPhotos: boolean;
+  handleHelpful: (id: number, value: number) => Promise<void>;
+}
+
+const ReviewsItemComponent: React.FunctionComponent<ReviewsItemComponentProps> = props => {
   const {
     t,
     review,
@@ -172,18 +183,6 @@ const ReviewsItemComponent = props => {
       </ReviewModala>
     </Row>
   );
-};
-
-ReviewsItemComponent.propTypes = {
-  review: PropTypes.object,
-  currentUser: PropTypes.object,
-  history: PropTypes.object,
-  showPhotos: PropTypes.bool,
-  showModal: PropTypes.bool,
-  reviewHelpfulStatus: PropTypes.bool,
-  handleHelpful: PropTypes.func,
-  deleteReview: PropTypes.func,
-  t: PropTypes.func
 };
 
 export default compose(withReviewHelpfulStatus)(ReviewsItemComponent);

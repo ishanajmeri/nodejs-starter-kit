@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { compose } from '@gqlapp/core-common';
 import { PageLayout } from '@gqlapp/look-client-react';
@@ -7,8 +6,13 @@ import { withCurrentUser } from '@gqlapp/user-client-react/containers/UserOperat
 
 import MyReviewView from '../components/MyReviewView';
 import MyReviewContainer from './MyReviewContainer';
+import { currentUser_currentUser as CurrentUser } from '@gqlapp/user-client-react/graphql/__generated__/currentUser';
 
-const MyReview = props => {
+interface MyReviewProps {
+  currentUser: CurrentUser;
+}
+
+const MyReview: React.FunctionComponent<MyReviewProps> = props => {
   const [modalName, setModalName] = React.useState('');
   const { currentUser } = props;
   return (
@@ -23,10 +27,6 @@ const MyReview = props => {
       </MyReviewContainer>
     </PageLayout>
   );
-};
-
-MyReview.propTypes = {
-  currentUser: PropTypes.object
 };
 
 export default compose(withCurrentUser)(MyReview);
