@@ -33,7 +33,7 @@ const ImagesSlickComponent: React.FunctionComponent<ImagesSlickComponentProps> =
     </Row>
   );
 
-  const carouselSettings = (ItemLength: number) => {
+  const carouselSettings = (itLength: number) => {
     return {
       className: 'slider variable-width',
       variableWidth: true,
@@ -42,7 +42,7 @@ const ImagesSlickComponent: React.FunctionComponent<ImagesSlickComponentProps> =
       infinite: true,
       speed: 500,
       autoplaySpeed: 2000,
-      slidesToShow: ItemLength >= 4 ? 4 : ItemLength,
+      slidesToShow: itLength >= 4 ? 4 : itLength,
       slidesToScroll: 1,
       swipeToSlide: true,
 
@@ -52,21 +52,21 @@ const ImagesSlickComponent: React.FunctionComponent<ImagesSlickComponentProps> =
         {
           breakpoint: 1440,
           settings: {
-            slidesToShow: ItemLength >= 4 ? 4 : ItemLength,
+            slidesToShow: itLength >= 4 ? 4 : itLength,
             slidesToScroll: 1
           }
         },
         {
           breakpoint: 1024,
           settings: {
-            slidesToShow: ItemLength >= 3 ? 3 : ItemLength,
+            slidesToShow: itLength >= 3 ? 3 : itLength,
             slidesToScroll: 1
           }
         },
         {
           breakpoint: 768,
           settings: {
-            slidesToShow: ItemLength >= 2 ? 2 : ItemLength,
+            slidesToShow: itLength >= 2 ? 2 : itLength,
             slidesToScroll: 1
           }
         },

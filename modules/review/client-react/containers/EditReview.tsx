@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Message } from '@gqlapp/look-client-react';
-import { PropTypes } from 'prop-types';
+import { SubscribeToMoreOptions } from 'apollo-client';
+import { History } from 'history';
 
 import { compose, removeTypename } from '@gqlapp/core-common';
 import { translate } from '@gqlapp/i18n-client-react';
@@ -9,8 +10,17 @@ import { withReview, withReviewEditing, subscribeToReview } from './ReviewOperat
 
 import EditReviewView from '../components/EditReviewView.web';
 import ROUTES from '../routes';
+// types
+import { EditReviewInput } from '../../../../packages/server/__generated__/globalTypes';
+import { EditReviewViewProps } from '../components/EditReviewView.web';
 
-const EditReview = props => {
+interface EditReviewProps extends EditReviewViewProps {
+  subscribeToMore: (options: SubscribeToMoreOptions) => () => void;
+  history: History;
+  editReview: (values: EditReviewInput) => void;
+}
+
+const EditReview: React.FunctionComponent<EditReviewProps> = props => {
   const { subscribeToMore, history } = props;
 
   useEffect(() => {
@@ -18,11 +28,11 @@ const EditReview = props => {
     return () => subscribe();
   });
 
-  const onSubmit = async values => {
+  const onSubmit = async (values: EditReviewInput) => {
     Message.destroy();
     Message.loading('Please wait...', 0);
     try {
-      values = removeTypename(values);
+      values = { ...removeTypename(values), id: null };
       const input = {
         id: values.id,
         userId: values.userId,
@@ -49,14 +59,6 @@ const EditReview = props => {
   };
   // console.log('props', props);
   return <EditReviewView {...props} onSubmit={onSubmit} />;
-};
-
-EditReview.propTypes = {
-  updateQuery: PropTypes.func,
-  subscribeToMore: PropTypes.func,
-  editReview: PropTypes.func,
-  review: PropTypes.object,
-  history: PropTypes.object
 };
 
 export default compose(withReview, withReviewEditing, translate('review'))(EditReview);

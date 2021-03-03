@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { withFormik, FieldArray } from 'formik';
+import { withFormik, FieldArray, FormikProps } from 'formik';
 
 import { FieldAdapter as Field } from '@gqlapp/forms-client-react';
 import { required, validate } from '@gqlapp/validation-common-react';
@@ -25,8 +25,9 @@ import { TranslateFunction } from '@gqlapp/i18n-client-react';
 
 import UserAutoCompleteComponent from './UserAutoCompleteComponent';
 // types
-import { review_review as Review } from '../graphql/__generated__/review';
+import { review_review as Review, review_review_modalReview } from '../graphql/__generated__/review';
 import { listing_listing as Listing } from '@gqlapp/listing-client-react/graphql/__generated__/listing';
+import { AddReviewInput, ReviewMediumInput } from '../../../../packages/server/__generated__/globalTypes';
 
 const ReviewFormSchema = { rating: [required], feedback: [required] };
 
@@ -37,6 +38,7 @@ const Rating = styled(Rate)`
     font-size: 25px !important;
   }
 `;
+
 interface FormValues {
   id: number;
   modalName: string;
@@ -44,28 +46,29 @@ interface FormValues {
   userId: number;
   rating: string;
   feedback: string;
-  reviewMedia: {
-    video: string[];
-  };
+  reviewMedia: ReviewMediumValue;
+}
+interface ReviewMediumValue {
+  image: ReviewMediumInput[];
+  video: ReviewMediumInput[];
 }
 
 export interface ReviewFormComponentProps {
-  modalData: object;
-  modalName: string;
-  modalId: number;
-  review: Review;
-  dirty: boolean;
-  showModal: boolean;
-  cardTitle: string;
-  values: FormValues;
+  modalData?: review_review_modalReview;
+  review?: Review;
+  dirty?: boolean;
+  showModal?: boolean;
+  hideModal?: () => void;
+  // values?: FormValues;
   t: TranslateFunction;
-  onSearchTextChange: () => null;
-  handleSubmit: () => null;
-  setFieldValue: (field: string, value: string | number) => null;
-  listing: Listing;
+  onSearchTextChange?: () => null;
+  setFieldValue?: (field: string, value: string | number) => null;
+  listing?: Listing;
+  // handleSubmit?: () => null
+  onSubmit: (value: any) => void;
 }
 
-const ReviewFormComponent: React.FC<ReviewFormComponentProps> = props => {
+const ReviewFormComponent: React.FC<ReviewFormComponentProps & FormikProps<FormValues>> = props => {
   const { dirty, values, onSearchTextChange, handleSubmit, setFieldValue, showModal, t, listing } = props;
   const videos = values.reviewMedia.video;
   const [load, setLoad] = React.useState(false);
@@ -87,7 +90,7 @@ const ReviewFormComponent: React.FC<ReviewFormComponentProps> = props => {
         <Icon
           type="MinusCircleOutlined"
           style={{ paddingTop: '40px' }}
-          title="Remove "
+          title="Remove"
           className="dynamic-delete-button"
           onClick={() => setFieldValue('reviewMedia.video', videos.splice(index, 1) && videos)}
         />
@@ -243,10 +246,10 @@ const ReviewFormComponent: React.FC<ReviewFormComponentProps> = props => {
   );
 };
 
-const ReviewWithFormik = withFormik({
+const ReviewWithFormik = withFormik<ReviewFormComponentProps, FormValues>({
   enableReinitialize: true,
   mapPropsToValues: (props: ReviewFormComponentProps) => {
-    const reviewMedia = {
+    const reviewMedia: ReviewMediumValue = {
       image: [],
       video: []
     };
@@ -280,8 +283,8 @@ const ReviewWithFormik = withFormik({
       }
     };
   },
-  async handleSubmit(values: Review, { props: { onSubmit, hideModal } }) {
-    const input: Review = {
+  async handleSubmit(values, { props: { onSubmit, hideModal } }) {
+    const input: { modalName: string; modalId: number } & AddReviewInput = {
       id: values.id,
       modalName: values.modalName,
       modalId: values.modalId,

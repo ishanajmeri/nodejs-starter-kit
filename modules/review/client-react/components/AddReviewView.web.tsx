@@ -4,11 +4,13 @@ import { PageLayout, MetaTags, Heading, Row, Card, Spinner } from '@gqlapp/look-
 
 import ReviewFormComponent from './ReviewFormComponent';
 import settings from '@gqlapp/config';
+// types
+import { AddReviewInput } from '../../../../packages/server/__generated__/globalTypes';
 
 export interface AddReviewViewProps {
   t: TranslateFunction;
   loading: boolean;
-  addReview: () => null;
+  addReview: (values: AddReviewInput) => void;
 }
 
 const AddReviewView: React.FC<AddReviewViewProps> = props => {
