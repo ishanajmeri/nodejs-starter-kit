@@ -1,17 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { History } from 'history';
+import { SubscribeToMoreOptions } from 'apollo-client';
 
 import { compose } from '@gqlapp/core-common';
 import { Button, EmptyComponent, Spinner, SlickCarousel } from '@gqlapp/look-client-react';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 
 import { withListings } from '../containers/ListingOperations';
 import RelatedCardComponent from './RelatedCardComponent';
 import { subscribeToListings } from '../containers/ListingSubscriptions';
 
+// types
+import { listings_listings as Listings } from '../graphql/__generated__/listings';
+import { currentUser_currentUser as CurrentUser } from '@gqlapp/user-client-react/graphql/__generated__/currentUser';
+import { getCart_getCart as GetCart } from '@gqlapp/order-client-react/graphql/__generated__/getCart';
+
 const isImg = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?/;
 
-export const getChildrenToRender = (item, i) => {
+export const getChildrenToRender = (item: any, i: number) => {
   let tag = item.name.indexOf('title') === 0 ? 'h1' : 'div';
   tag = item.href ? 'a' : tag;
   let children =
@@ -26,7 +32,27 @@ export const getChildrenToRender = (item, i) => {
   return React.createElement(tag, { key: i.toString(), ...item }, children);
 };
 
-const ListingCarousel = props => {
+interface ListingCarouselProps {
+  listings: Listings;
+  loading: boolean;
+  currentUser: CurrentUser;
+  currentUserLoading: boolean;
+  history: History;
+  cartLoading: boolean;
+  onDelete: (id: number) => void;
+  getCart: GetCart;
+  filter: {
+    isActive: boolean;
+  };
+  t: TranslateFunction;
+  onFilter: () => boolean;
+  subscribeToMore: (options: SubscribeToMoreOptions) => () => void;
+  isMobile: boolean;
+  alignTitle: string;
+  title: string;
+}
+
+const ListingCarousel: React.FunctionComponent<ListingCarouselProps> = props => {
   const {
     listings,
     loading: loading1,
@@ -91,7 +117,7 @@ const ListingCarousel = props => {
   delete props.isMobile;
 
   const itemLength = listings && listings.edges && listings.edges.filter(onFilter).length;
-  const carouselSettings = itemLength => {
+  const carouselSettings = (itLength: number) => {
     return {
       className: 'slider variable-width',
       // variableWidth: true,
@@ -100,7 +126,7 @@ const ListingCarousel = props => {
       infinite: true,
       speed: 500,
       autoplaySpeed: 2000,
-      slidesToShow: itemLength >= 5 ? 4.5 : itemLength,
+      slidesToShow: itLength >= 5 ? 4.5 : itLength,
       slidesToScroll: 1,
       swipeToSlide: true,
       lazyLoad: true,
@@ -111,21 +137,21 @@ const ListingCarousel = props => {
         {
           breakpoint: 1440,
           settings: {
-            slidesToShow: itemLength >= 5 ? 4.5 : itemLength,
+            slidesToShow: itLength >= 5 ? 4.5 : itLength,
             slidesToScroll: 1
           }
         },
         {
           breakpoint: 1024,
           settings: {
-            slidesToShow: itemLength >= 4 ? 3.5 : itemLength,
+            slidesToShow: itLength >= 4 ? 3.5 : itLength,
             slidesToScroll: 1
           }
         },
         {
           breakpoint: 768,
           settings: {
-            slidesToShow: itemLength >= 2 ? 2.5 : itemLength,
+            slidesToShow: itLength >= 2 ? 2.5 : itLength,
             slidesToScroll: 1
           }
         },
@@ -177,24 +203,6 @@ const ListingCarousel = props => {
       </div>
     </div>
   );
-};
-
-ListingCarousel.propTypes = {
-  currentUser: PropTypes.object,
-  getCart: PropTypes.object,
-  history: PropTypes.object.isRequired,
-  title: PropTypes.string,
-  currentUserLoading: PropTypes.bool,
-  loading: PropTypes.bool,
-  onDelete: PropTypes.func,
-  cartLoading: PropTypes.bool,
-  listings: PropTypes.object,
-  isMobile: PropTypes.bool,
-  subscribeToMore: PropTypes.func,
-  onFilter: PropTypes.func,
-  t: PropTypes.func,
-  filter: PropTypes.object,
-  alignTitle: PropTypes.string
 };
 
 export default compose(withListings, translate('listing'))(ListingCarousel);

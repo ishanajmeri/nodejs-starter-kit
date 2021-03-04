@@ -72,7 +72,16 @@ const ListingDetailView: React.FC<ListingDetailViewProps> = props => {
     link: string;
     emailMessage: string;
   } = listing && ListingShareMessage(listing.id, listing.user.username, listing.title);
-
+  const listingCarousleProps = {
+    filter: { userId: listing.user.id },
+    onFilter: c => c.node.user.id === listing.user.id,
+    currentUser,
+    title: 'Similar Listing (same user)',
+    alignTitle: 'left',
+    history,
+    // style={{ backgroundColor: 'white' }},
+    ...props
+  };
   return (
     <PageLayout>
       <MetaTags title={t('listingDetail.title')} description={t('listingDetail.meta')} />
@@ -257,16 +266,7 @@ const ListingDetailView: React.FC<ListingDetailViewProps> = props => {
             <br />
             <br />
           </div>
-          <ListingCarousel
-            filter={{ userId: listing.user.id }}
-            onFilter={c => c.node.user.id === listing.user.id}
-            currentUser={currentUser}
-            title={'Similar Listing (same user)'}
-            alignTitle="left"
-            history={history}
-            // style={{ backgroundColor: 'white' }}
-            {...props}
-          />
+          <ListingCarousel {...listingCarousleProps} />
         </>
       )}
     </PageLayout>

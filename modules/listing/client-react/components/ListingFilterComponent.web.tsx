@@ -24,7 +24,7 @@ import { MODAL } from '@gqlapp/review-common';
 import { compose } from '@gqlapp/core-common';
 
 import ROUTES from '../routes';
-import SliderControlled from './FilterSliderControlledComponent';
+import FilterSliderControlledComponent from './FilterSliderControlledComponent';
 import { withGetBrandList } from '../containers/ListingOperations';
 
 // types
@@ -252,7 +252,7 @@ const ListingsFilterComponent: React.FC<ListingsFilterComponentProps> = props =>
   };
 
   const sliderControlled = (infilter: boolean) => (
-    <SliderControlled
+    <FilterSliderControlledComponent
       style={{
         width: '100%',
         background: 'white'

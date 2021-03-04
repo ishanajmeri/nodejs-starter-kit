@@ -24,7 +24,6 @@ const DiscountsCarouselView: React.FunctionComponent<DiscountsCarouselViewProps>
 
   return ids.length > 0 ? (
     <ListingCarousel
-      ids={ids}
       currentUser={currentUser}
       currentUserLoading={currentUserLoading}
       history={history}
@@ -33,7 +32,7 @@ const DiscountsCarouselView: React.FunctionComponent<DiscountsCarouselViewProps>
       getCart={getCart}
       filter={{ isActive: true }}
       title={title}
-      style={style}
+      // style={style}
     />
   ) : null;
 };
