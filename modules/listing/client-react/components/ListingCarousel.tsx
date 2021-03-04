@@ -68,7 +68,6 @@ const ListingCarousel: React.FunctionComponent<ListingCarouselProps> = props => 
       return true;
     }
   } = props;
-
   React.useEffect(() => {
     const subscribe = subscribeToListings(props.subscribeToMore, filter);
     return () => subscribe();

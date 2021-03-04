@@ -2,10 +2,12 @@ import React from 'react';
 import { enquireScreen } from 'enquire-js';
 import { History } from 'history';
 
+import { compose } from '@gqlapp/core-common';
 import { PageLayout, MetaTags } from '@gqlapp/look-client-react';
-import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import settings from '@gqlapp/config';
 import { LABEL } from '@gqlapp/home-common';
+import { withCurrentUser } from '@gqlapp/user-client-react/containers/UserOperations';
 import { ListingCarousel } from '@gqlapp/listing-client-react';
 import { DiscountsCarousel } from '@gqlapp/discount-client-react';
 
@@ -30,7 +32,7 @@ export interface HomeViewState {
   show: boolean;
 }
 
-class HomeView extends React.Component<HomeViewProps, HomeViewState> {
+class HomeView5 extends React.Component<HomeViewProps, HomeViewState> {
   constructor(props: HomeViewProps) {
     super(props);
 
@@ -128,4 +130,4 @@ class HomeView extends React.Component<HomeViewProps, HomeViewState> {
   }
 }
 
-export default translate('home')(HomeView);
+export default compose(withCurrentUser)(HomeView5);
