@@ -6,19 +6,15 @@ import settings from '@gqlapp/config';
 
 import DynamicCarouselFormComponent from './DynamicCarouselFormComponent';
 // types
-import { currentUser_currentUser } from '@gqlapp/user-client-react/graphql/__generated__/currentUser';
-import { AddDynamicCarouselInput } from '../../../../../packages/server/__generated__/globalTypes';
+import { EditDynamicCarouselInput } from '../../../../../packages/server/__generated__/globalTypes';
 import { AddDynamicCarouselProps } from '../../containers/DCComponents/AddDynamicCarousel';
 
 interface AddDynamicCarouselViewProps extends AddDynamicCarouselProps {
-  t: TranslateFunction;
-  loading: boolean;
-  onSubmit: (values: AddDynamicCarouselInput) => void;
-  currentUser: currentUser_currentUser;
+  onSubmit: (values: EditDynamicCarouselInput) => void;
 }
 
 const AddDynamicCarouselView: React.FunctionComponent<AddDynamicCarouselViewProps> = props => {
-  const { t, loading, onSubmit, currentUser } = props;
+  const { t, loading, onSubmit } = props;
   return (
     <PageLayout type="forms">
       <MetaTags title={t('banner')} description={`${settings.app.name} - ${t('meta')}`} />
@@ -34,12 +30,7 @@ const AddDynamicCarouselView: React.FunctionComponent<AddDynamicCarouselViewProp
               </Heading>
             }
           >
-            <DynamicCarouselFormComponent
-              t={t}
-              dynamicCarousel={{ isActive: true }}
-              onSubmit={onSubmit}
-              currentUser={currentUser}
-            />
+            <DynamicCarouselFormComponent t={t} onSubmit={onSubmit} />
           </Card>
         </Row>
       )}

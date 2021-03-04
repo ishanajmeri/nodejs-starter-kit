@@ -1,19 +1,32 @@
 import React, { useEffect } from 'react';
-import { PropTypes } from 'prop-types';
+import { SubscribeToMoreOptions } from 'apollo-client';
+import { History } from 'history';
 
 import { compose } from '@gqlapp/core-common';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 
 import { withDynamicCarousel, withEditDynamicCarousel, subscribeToDynamicCarousel } from './DynamicCarouselOperations';
 import EditDynamicCarouselView from '../../components/DCComponents/EditDynamicCarouselView.web';
+// types
+import { EditDynamicCarouselInput } from '../../../../../packages/server/__generated__/globalTypes';
+import { dynamicCarousel_dynamicCarousel as DynamicCarousel } from '../../graphql/__generated__/dynamicCarousel';
 
-const EditDynamicCarousel = props => {
+export interface EditDynamicCarouselProps {
+  t: TranslateFunction;
+  loading: boolean;
+  subscribeToMore: (options: SubscribeToMoreOptions) => () => void;
+  history: History;
+  editDynamicCarousel: (values: EditDynamicCarouselInput) => void;
+  dynamicCarousel: DynamicCarousel;
+}
+
+const EditDynamicCarousel: React.FunctionComponent<EditDynamicCarouselProps> = props => {
   const { subscribeToMore, history, editDynamicCarousel } = props;
   useEffect(() => {
     const subscribe = subscribeToDynamicCarousel(subscribeToMore, history);
     return () => subscribe();
   });
-  const handleSubmit = values => {
+  const handleSubmit = (values: EditDynamicCarouselInput) => {
     try {
       editDynamicCarousel(values);
     } catch (e) {
@@ -22,14 +35,6 @@ const EditDynamicCarousel = props => {
   };
   // console.log('props', props);
   return <EditDynamicCarouselView onSubmit={handleSubmit} {...props} />;
-};
-
-EditDynamicCarousel.propTypes = {
-  updateQuery: PropTypes.func,
-  subscribeToMore: PropTypes.func,
-  dynamicCarousel: PropTypes.object,
-  history: PropTypes.object,
-  editDynamicCarousel: PropTypes.func
 };
 
 export default compose(withDynamicCarousel, withEditDynamicCarousel, translate('home'))(EditDynamicCarousel);

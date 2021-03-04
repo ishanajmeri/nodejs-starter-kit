@@ -19,17 +19,18 @@ import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import { IMG_ASPECT } from '@gqlapp/listing-common';
 // types
 import { dynamicCarousel_dynamicCarousel as DynamicCarousel } from '../../graphql/__generated__/dynamicCarousel';
-import { AddDynamicCarouselInput } from '../../../../../packages/server/__generated__/globalTypes';
+import { EditDynamicCarouselInput } from '../../../../../packages/server/__generated__/globalTypes';
 
 const DynamicCarouselFormSchema = {
   imageUrl: [required]
 };
 interface DynamicCarouselFormComponentProps {
   t: TranslateFunction;
-  dynamicCarousel: DynamicCarousel;
-  onSubmit: (value: AddDynamicCarouselInput) => void;
+  dynamicCarousel?: DynamicCarousel;
+  onSubmit: (value: EditDynamicCarouselInput) => void;
 }
 interface FormValues {
+  id: number;
   title: string;
   description: string;
   label: string;

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { translate } from '@gqlapp/i18n-client-react';
 import { compose } from '@gqlapp/core-common';
@@ -7,8 +6,14 @@ import { Spinner } from '@gqlapp/look-client-react';
 
 import { withDynamicCarousels } from './DynamicCarouselOperations';
 import ImageBannerComponentView from '../../components/DCComponents/ImageBannerComponentView';
+// types
+import { dynamicCarousels_dynamicCarousels as DynamicCarousels } from '../../graphql/__generated__/dynamicCarousels';
+interface ImageBannerComponentProps {
+  loading: boolean;
+  dynamicCarousels: DynamicCarousels;
+}
 
-const ImageBannerComponent = props => {
+const ImageBannerComponent: React.FunctionComponent<ImageBannerComponentProps> = props => {
   const { loading, dynamicCarousels } = props;
 
   // console.log('props', props);
@@ -17,11 +22,6 @@ const ImageBannerComponent = props => {
   ) : (
     <Spinner size="small" />
   );
-};
-
-ImageBannerComponent.propTypes = {
-  loading: PropTypes.bool,
-  dynamicCarousels: PropTypes.array
 };
 
 export default compose(withDynamicCarousels, translate('home'))(ImageBannerComponent);

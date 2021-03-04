@@ -1,13 +1,20 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
 
 import { MetaTags, Row, PageLayout, Card, Heading, Spinner } from '@gqlapp/look-client-react';
-
 import settings from '@gqlapp/config';
-import DynamicCarouselFormComponent from './DynamicCarouselFormComponent';
 
-const EditDynamicCarouselView = props => {
-  const { t, dynamicCarousel, loading, onSubmit, currentUser } = props;
+import DynamicCarouselFormComponent from './DynamicCarouselFormComponent';
+// types
+import { EditDynamicCarouselInput } from '../../../../../packages/server/__generated__/globalTypes';
+import { EditDynamicCarouselProps } from '../../containers/DCComponents/EditDynamicCarousel';
+
+interface EditDynamicCarouselViewProps extends EditDynamicCarouselProps {
+  onSubmit: (values: EditDynamicCarouselInput) => void;
+}
+
+const EditDynamicCarouselView: React.FunctionComponent<EditDynamicCarouselViewProps> = props => {
+  const { t, dynamicCarousel, loading, onSubmit } = props;
+
   return (
     <PageLayout type="forms">
       <MetaTags title={t('banner')} description={`${settings.app.name} - ${t('meta')}`} />
@@ -26,12 +33,7 @@ const EditDynamicCarouselView = props => {
                 </Heading>
               }
             >
-              <DynamicCarouselFormComponent
-                t={t}
-                dynamicCarousel={dynamicCarousel}
-                onSubmit={onSubmit}
-                currentUser={currentUser}
-              />
+              <DynamicCarouselFormComponent t={t} dynamicCarousel={dynamicCarousel} onSubmit={onSubmit} />
             </Card>
           ) : (
             <Spinner size="small" />
@@ -40,14 +42,6 @@ const EditDynamicCarouselView = props => {
       )}
     </PageLayout>
   );
-};
-
-EditDynamicCarouselView.propTypes = {
-  t: PropTypes.func,
-  loading: PropTypes.bool,
-  dynamicCarousel: PropTypes.object,
-  currentUser: PropTypes.object,
-  onSubmit: PropTypes.func
 };
 
 export default EditDynamicCarouselView;

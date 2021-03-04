@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { translate } from '@gqlapp/i18n-client-react';
 import { compose } from '@gqlapp/core-common';
@@ -7,8 +6,15 @@ import { Spinner } from '@gqlapp/look-client-react';
 
 import { withDynamicCarousels } from './DynamicCarouselOperations';
 import DynamicCarouselComponentView from '../../components/DCComponents/DynamicCarouselComponentView';
+// types
+import { dynamicCarousels_dynamicCarousels as DynamicCarousels } from '../../graphql/__generated__/dynamicCarousels';
 
-const DynamicCarouselComponent = props => {
+interface DynamicCarouselComponentProps {
+  loading: boolean;
+  dynamicCarousels: DynamicCarousels;
+}
+
+const DynamicCarouselComponent: React.FunctionComponent<DynamicCarouselComponentProps> = props => {
   const { loading, dynamicCarousels } = props;
 
   // console.log('props', props);
@@ -19,11 +25,6 @@ const DynamicCarouselComponent = props => {
       <Spinner />
     </div>
   );
-};
-
-DynamicCarouselComponent.propTypes = {
-  loading: PropTypes.bool,
-  dynamicCarousels: PropTypes.array
 };
 
 export default compose(withDynamicCarousels, translate('home'))(DynamicCarouselComponent);
