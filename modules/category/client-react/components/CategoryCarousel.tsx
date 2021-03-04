@@ -1,12 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { displayDataCheck } from '@gqlapp/listing-client-react';
 import { CategoryItemComponent } from '@gqlapp/category-client-react';
-
 import { SlickCarousel } from '@gqlapp/look-client-react';
+// types
+import { categories_categories_edges_node_subCategories as Categories } from '../graphql/__generated__/categories';
 
-const CategoryCarousel = props => {
+interface CategoryCarouselProps {
+  categories: Categories[];
+}
+
+const CategoryCarousel: React.FunctionComponent<CategoryCarouselProps> = props => {
   const { categories } = props;
 
   const itemLength = categories && displayDataCheck(categories.length);
@@ -71,7 +75,7 @@ const CategoryCarousel = props => {
       <div className="category-carousel ">
         <SlickCarousel
           Compo={CategoryItemComponent}
-          settings={carouselSettings(itemLength)}
+          settings={carouselSettings()}
           itemName={'category'}
           data={categories}
           height={'144px'}
@@ -83,10 +87,6 @@ const CategoryCarousel = props => {
       </div>
     </div>
   );
-};
-
-CategoryCarousel.propTypes = {
-  categories: PropTypes.object
 };
 
 export default CategoryCarousel;

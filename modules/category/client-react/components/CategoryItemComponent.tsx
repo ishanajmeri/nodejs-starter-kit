@@ -1,12 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
 import { Text, Card } from '@gqlapp/look-client-react';
 import { useImageLoaded, LISTING_ROUTES } from '@gqlapp/listing-client-react';
 import { NO_IMG } from '@gqlapp/listing-common';
+// types
+import { category_category as Category } from '../graphql/__generated__/category';
 
-const CategoryItemComponent = props => {
+interface CategoryItemComponentProps {
+  category: Category;
+  componentStyle: object;
+}
+
+const CategoryItemComponent: React.FunctionComponent<CategoryItemComponentProps> = props => {
   const [ref, loaded, onLoad] = useImageLoaded();
   const { category, componentStyle } = props;
 
@@ -61,11 +67,6 @@ const CategoryItemComponent = props => {
       </NavLink>
     </div>
   );
-};
-
-CategoryItemComponent.propTypes = {
-  category: PropTypes.object,
-  componentStyle: PropTypes.object
 };
 
 export default CategoryItemComponent;

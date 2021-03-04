@@ -9,4 +9,3 @@ export { default as CategoryNavBarComponentView } from './CategoryNavBarComponen
 export { default as CategoryTreeComponentView } from './CategoryTreeComponentView';
 export { default as CategoryView } from './CategoryView';
 export { default as EditCategoryView } from './EditCategoryView';
-export { default as RendersubCategories } from './RendersubCategories';

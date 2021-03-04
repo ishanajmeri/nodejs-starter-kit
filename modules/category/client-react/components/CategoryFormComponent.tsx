@@ -25,7 +25,6 @@ import CategoryTreeComponent from '../containers/CategoryTreeComponent';
 // types
 import { EditCategoryInput } from '../../../../packages/server/__generated__/globalTypes';
 import { CategoryInfo as Category } from '../graphql/__generated__/CategoryInfo';
-// import RendersubCategories from './RendersubCategories';
 
 interface CategoryFormComponentProps {
   cardTitle: string;
