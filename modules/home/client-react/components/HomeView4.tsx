@@ -1,34 +1,52 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { enquireScreen } from 'enquire-js';
+import { History } from 'history';
 
+import { compose } from '@gqlapp/core-common';
 import { PageLayout, MetaTags } from '@gqlapp/look-client-react';
-import { translate } from '@gqlapp/i18n-client-react';
-import settings from '@gqlapp/config';
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import { LABEL } from '@gqlapp/home-common';
-import { ListingCarousel } from '@gqlapp/listing-client-react';
+import { withCurrentUser } from '@gqlapp/user-client-react/containers/UserOperations';
 import { DiscountsCarousel } from '@gqlapp/discount-client-react';
+import { ListingCarousel } from '@gqlapp/listing-client-react';
 
-import BannerComponent from '../containers/DCComponents/BannerComponent';
-import ImageTabBannerComponent from '../containers/DCComponents/ImageTabBannerComponent';
+import DynamicCarousel from '../containers/DCComponents/DynamicCarouselComponent';
+import ImageBanner from '../containers/DCComponents/ImageBannerComponent';
 
-let isMobile;
-enquireScreen(b => {
+// types
+import { currentUser_currentUser } from '@gqlapp/user-client-react/graphql/__generated__/currentUser';
+// import Banner0 from './AntdLanding/Banner0';
+// import Content5 from './AntdLanding/Content5';
+// import Feature0 from './AntdLanding/Feature0';
+// import Feature3 from './AntdLanding/Feature3';
+
+let isMobile: boolean;
+enquireScreen((b: boolean) => {
   isMobile = b;
 });
 
-class HomeView extends React.Component {
-  constructor(props) {
+export interface HomeView4Props {
+  t: TranslateFunction;
+  history: History;
+  currentUser: currentUser_currentUser;
+}
+
+export interface HomeView4State {
+  isMobile: boolean;
+  show: boolean;
+}
+
+class HomeView4 extends React.Component<HomeView4Props, HomeView4State> {
+  constructor(props: HomeView4Props) {
     super(props);
     this.state = {
       isMobile,
-      show: true //!location.port, ToDo - find a better approach this
+      show: true // !location.port, ToDo - find a better approach this
     };
   }
-
-  componentDidMount() {
+  public componentDidMount() {
     // 适配手机屏幕;
-    enquireScreen(b => {
+    enquireScreen((b: boolean) => {
       this.setState({ isMobile: !!b });
     });
     // ToDo - find a better approach for below statement
@@ -41,26 +59,17 @@ class HomeView extends React.Component {
     }, 500);
     // }
   }
-
-  render() {
+  public render() {
     const { history, currentUser, t } = this.props;
     const children = [
-      <BannerComponent
+      <DynamicCarousel
         id="Banner_0"
         key="Banner_0"
-        filter={{ label: LABEL[2], isActive: true }}
+        filter={{ label: LABEL[0], isActive: true }}
         isMobile={this.state.isMobile}
         {...this.props}
       />,
-      <ListingCarousel
-        filter={{ isFeatured: true, isActive: true }}
-        onFilter={c => c.node.listingFlags.isFeatured === true}
-        currentUser={currentUser}
-        title={t('listingCarousel.featuredListings')}
-        history={history}
-        {...this.props}
-      />,
-      <ImageTabBannerComponent
+      <ImageBanner
         t={t}
         id="Banner_1"
         key="Banner_1"
@@ -70,13 +79,21 @@ class HomeView extends React.Component {
         style={{ backgroundColor: '#f7f7f7' }}
       />,
       <ListingCarousel
+        filter={{ isFeatured: true, isActive: true }}
+        onFilter={c => c.node.listingFlags.isFeatured === true}
+        currentUser={currentUser}
+        title={t('listingCarousel.featuredListings')}
+        history={history}
+        {...this.props}
+      />,
+      <ListingCarousel
         filter={{ isNew: true, isActive: true }}
         onFilter={c => c.node.listingFlags.isNew === true}
         currentUser={currentUser}
         title={t('listingCarousel.latestAdditions')}
         history={history}
         {...this.props}
-        // style={{ backgroundColor: '#f7f7f7' }}
+        style={{ backgroundColor: '#f7f7f7' }}
       />,
       <DiscountsCarousel
         filter={{ isActive: true, isDiscount: true, onGoing: true }}
@@ -85,7 +102,6 @@ class HomeView extends React.Component {
         title={t('discountsCarousel.onGoing')}
         history={history}
         {...this.props}
-        OnGoingDiscounts
       />,
       <DiscountsCarousel
         filter={{ isActive: true, isDiscount: true, upComing: true }}
@@ -94,13 +110,18 @@ class HomeView extends React.Component {
         title={t('discountsCarousel.upComing')}
         history={history}
         {...this.props}
-        OnGoingDiscounts
         style={{ backgroundColor: '#f7f7f7' }}
       />
+      // <Banner0 id="Banner0_0" key="Banner0_0" isMobile={this.state.isMobile} />,
+      // <Feature0 id="Feature0_0" key="Feature0_0" isMobile={this.state.isMobile} />,
+      // <Content5 id="Content5_0" key="Content5_0" isMobile={this.state.isMobile} />,
+      // <Feature3 id="Feature3_0" key="Feature3_0" isMobile={this.state.isMobile} />,
     ];
+
+    // console.log(this.props);
     return (
       <PageLayout type="home">
-        <MetaTags title={t('title')} description={`${settings.app.name} - ${t('meta')}`} />
+        <MetaTags title={t('title')} description={t('welcomeText')} />
 
         <div
           className="templates-wrapper"
@@ -116,10 +137,5 @@ class HomeView extends React.Component {
     );
   }
 }
-HomeView.propTypes = {
-  currentUser: PropTypes.object,
-  history: PropTypes.object,
-  t: PropTypes.func
-};
 
-export default translate('home')(HomeView);
+export default compose(withCurrentUser)(HomeView4);

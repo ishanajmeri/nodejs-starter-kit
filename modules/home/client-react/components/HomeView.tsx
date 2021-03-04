@@ -1,16 +1,13 @@
 import React from 'react';
+import { enquireScreen } from 'enquire-js';
 
 import { PageLayout, MetaTags } from '@gqlapp/look-client-react';
-import { enquireScreen } from 'enquire-js';
 import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import settings from '@gqlapp/config';
 
 import Banner0 from './AntdLanding/Banner0';
-
 import Content5 from './AntdLanding/Content5';
-
 import Feature0 from './AntdLanding/Feature0';
-
 import Feature3 from './AntdLanding/Feature3';
 
 let isMobile: boolean;

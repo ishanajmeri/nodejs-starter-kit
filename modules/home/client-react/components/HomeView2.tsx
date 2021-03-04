@@ -1,36 +1,42 @@
 import React from 'react';
+import { enquireScreen } from 'enquire-js';
 
 import { PageLayout, MetaTags } from '@gqlapp/look-client-react';
-// import { TranslateFunction } from '@gqlapp/i18n-client-react';
-import { enquireScreen } from 'enquire-js';
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import { translate } from '@gqlapp/i18n-client-react';
-import PropTypes from 'prop-types';
 import settings from '@gqlapp/config';
-import Banner0 from './AntdLanding/Banner0';
 
-import Content5 from './AntdLanding/Content5';
-
+import Banner5 from './AntdLanding/Banner5';
+import Feature6 from './AntdLanding/Feature6';
 import Feature0 from './AntdLanding/Feature0';
+import Feature7 from './AntdLanding/Feature7';
+import Feature8 from './AntdLanding/Feature8';
 
-import Feature3 from './AntdLanding/Feature3';
-
-let isMobile;
-enquireScreen(b => {
+let isMobile: boolean;
+enquireScreen((b: boolean) => {
   isMobile = b;
 });
+export interface HomeViewProps {
+  t: TranslateFunction;
+}
 
-class HomeView extends React.Component {
-  constructor(props) {
+export interface HomeViewState {
+  isMobile: boolean;
+  show: boolean;
+}
+
+class HomeView extends React.Component<HomeViewProps, HomeViewState> {
+  constructor(props: HomeViewProps) {
     super(props);
+
     this.state = {
       isMobile,
-      show: true //!location.port, ToDo - find a better approach this
+      show: true // !location.port, ToDo - find a better approach this
     };
   }
-
-  componentDidMount() {
+  public componentDidMount() {
     // 适配手机屏幕;
-    enquireScreen(b => {
+    enquireScreen((b: boolean) => {
       this.setState({ isMobile: !!b });
     });
     // ToDo - find a better approach for below statement
@@ -43,15 +49,14 @@ class HomeView extends React.Component {
     }, 500);
     // }
   }
-
-  render() {
-    console.log(this.props);
+  public render() {
     const { t } = this.props;
     const children = [
-      <Banner0 id="Banner0_0" key="Banner0_0" isMobile={this.state.isMobile} />,
+      <Banner5 id="Banner5_0" key="Banner5_0" isMobile={this.state.isMobile} />,
+      <Feature6 id="Feature6_0" key="Feature6_0" isMobile={this.state.isMobile} />,
+      <Feature7 id="Feature7_0" key="Feature7_0" isMobile={this.state.isMobile} />,
       <Feature0 id="Feature0_0" key="Feature0_0" isMobile={this.state.isMobile} />,
-      <Content5 id="Content5_0" key="Content5_0" isMobile={this.state.isMobile} />,
-      <Feature3 id="Feature3_0" key="Feature3_0" isMobile={this.state.isMobile} />
+      <Feature8 id="Feature8_0" key="Feature8_0" isMobile={this.state.isMobile} />
     ];
     return (
       <PageLayout type="home">
@@ -71,8 +76,5 @@ class HomeView extends React.Component {
     );
   }
 }
-HomeView.propTypes = {
-  t: PropTypes.func
-};
 
 export default translate('home')(HomeView);

@@ -18,6 +18,7 @@ export interface DiscountsCarouselProps {
   filter: FilterDiscountInput;
   title: string;
   discounts: DiscountsEdge;
+  style?: object;
 }
 
 const DiscountsCarousel: React.FunctionComponent<DiscountsCarouselProps> = props => {

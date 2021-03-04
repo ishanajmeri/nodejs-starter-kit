@@ -1,10 +1,8 @@
 import React from 'react';
+import { enquireScreen } from 'enquire-js';
 
 import { PageLayout, MetaTags } from '@gqlapp/look-client-react';
-// import { TranslateFunction } from '@gqlapp/i18n-client-react';
-import { enquireScreen } from 'enquire-js';
-import { translate } from '@gqlapp/i18n-client-react';
-import PropTypes from 'prop-types';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import settings from '@gqlapp/config';
 
 import Banner0 from './AntdLanding/Banner0';
@@ -40,23 +38,31 @@ import Teams4 from './AntdLanding/Teams4';
 import Footer1 from './AntdLanding/Footer1';
 import Footer2 from './AntdLanding/Footer2';
 
-let isMobile;
-enquireScreen(b => {
+let isMobile: boolean;
+enquireScreen((b: boolean) => {
   isMobile = b;
 });
 
-class HomeView extends React.Component {
-  constructor(props) {
+export interface HomeViewProps {
+  t: TranslateFunction;
+}
+
+export interface HomeViewState {
+  isMobile: boolean;
+  show: boolean;
+}
+
+class HomeView extends React.Component<HomeViewProps, HomeViewState> {
+  constructor(props: HomeViewProps) {
     super(props);
     this.state = {
       isMobile,
-      show: true //!location.port, ToDo - find a better approach this
+      show: true // !location.port, ToDo - find a better approach this
     };
   }
-
-  componentDidMount() {
+  public componentDidMount() {
     // 适配手机屏幕;
-    enquireScreen(b => {
+    enquireScreen((b: boolean) => {
       this.setState({ isMobile: !!b });
     });
     // ToDo - find a better approach for below statement
@@ -70,8 +76,7 @@ class HomeView extends React.Component {
     // }
   }
 
-  render() {
-    console.log(this.props);
+  public render() {
     const { t } = this.props;
     const children = [
       <Banner0 id="Banner0_0" key="Banner0_0" isMobile={this.state.isMobile} />,
@@ -125,8 +130,5 @@ class HomeView extends React.Component {
     );
   }
 }
-HomeView.propTypes = {
-  t: PropTypes.func
-};
 
 export default translate('home')(HomeView);
