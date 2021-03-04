@@ -1,16 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { compose } from '@gqlapp/core-common';
 import { translate } from '@gqlapp/i18n-client-react';
 
 import AddDynamicCarouselView from '../../components/DCComponents/AddDynamicCarouselView.web';
-
 import { withAddDynamicCarousel } from './DynamicCarouselOperations';
+// types
+import { AddDynamicCarouselInput } from '../../../../../packages/server/__generated__/globalTypes';
 
-const AddDynamicCarousel = props => {
+export interface AddDynamicCarouselProps {
+  addDynamicCarousel: (values: AddDynamicCarouselInput) => void;
+}
+
+const AddDynamicCarousel: React.FunctionComponent<AddDynamicCarouselProps> = props => {
   const { addDynamicCarousel } = props;
-  const handleSubmit = values => {
+  const handleSubmit = (values: AddDynamicCarouselInput) => {
     try {
       delete values.id;
       addDynamicCarousel(values);
@@ -18,12 +22,6 @@ const AddDynamicCarousel = props => {
       throw Error(e);
     }
   };
-  // console.log('props', props);
   return <AddDynamicCarouselView onSubmit={handleSubmit} {...props} />;
 };
-
-AddDynamicCarousel.propTypes = {
-  addDynamicCarousel: PropTypes.func
-};
-
 export default compose(withAddDynamicCarousel, translate('home'))(AddDynamicCarousel);

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { PropTypes } from 'prop-types';
-import { withFormik } from 'formik';
+import { withFormik, FormikProps } from 'formik';
 
 import { FieldAdapter as Field } from '@gqlapp/forms-client-react';
 import { required, validate } from '@gqlapp/validation-common-react';
@@ -16,13 +15,30 @@ import {
   RenderSelect
 } from '@gqlapp/look-client-react';
 import { LABEL } from '@gqlapp/home-common';
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import { IMG_ASPECT } from '@gqlapp/listing-common';
+// types
+import { dynamicCarousel_dynamicCarousel as DynamicCarousel } from '../../graphql/__generated__/dynamicCarousel';
+import { AddDynamicCarouselInput } from '../../../../../packages/server/__generated__/globalTypes';
 
 const DynamicCarouselFormSchema = {
   imageUrl: [required]
 };
+interface DynamicCarouselFormComponentProps {
+  t: TranslateFunction;
+  dynamicCarousel: DynamicCarousel;
+  onSubmit: (value: AddDynamicCarouselInput) => void;
+}
+interface FormValues {
+  title: string;
+  description: string;
+  label: string;
+  isActive: boolean | null;
+  link: string;
+  imageUrl: string | null;
+}
 
-const DynamicCarouselFormComponent = props => {
+const DynamicCarouselFormComponent: React.FC<DynamicCarouselFormComponentProps & FormikProps<FormValues>> = props => {
   const [load, setLoad] = useState(false);
   const { t, values, handleSubmit, setFieldValue } = props;
 
@@ -65,7 +81,7 @@ const DynamicCarouselFormComponent = props => {
                 All
               </Option>
               {LABEL &&
-                LABEL.map((l, i) => (
+                LABEL.map((l: string, i: number) => (
                   <Option key={i + 2} value={l}>
                     {l}
                   </Option>
@@ -108,15 +124,7 @@ const DynamicCarouselFormComponent = props => {
   );
 };
 
-DynamicCarouselFormComponent.propTypes = {
-  cardTitle: PropTypes.string,
-  t: PropTypes.func,
-  handleSubmit: PropTypes.func,
-  setFieldValue: PropTypes.func,
-  values: PropTypes.object
-};
-
-const DynamicCarouselWithFormik = withFormik({
+const DynamicCarouselWithFormik = withFormik<DynamicCarouselFormComponentProps, FormValues>({
   enableReinitialize: true,
   mapPropsToValues: props => {
     return {
