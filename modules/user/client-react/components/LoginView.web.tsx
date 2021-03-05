@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import {
   Row,
   Icon,
@@ -15,9 +15,20 @@ import {
   MetaTags
 } from '@gqlapp/look-client-react';
 
-import LoginForm from './LoginForm';
+import LoginForm from './LoginForm.web';
+// types
+import { LoginUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
-const LoginView = ({ onSubmit, t, isRegistered, hideModal, history }) => {
+interface LoginViewProps {
+  t: TranslateFunction;
+  history: History;
+  hideModal: () => void;
+  onSubmit: (values: LoginUserInput) => void;
+  isRegistered: boolean;
+}
+
+const LoginView: React.FunctionComponent<LoginViewProps> = props => {
+  const { onSubmit, t, isRegistered, hideModal, history } = props;
   const renderConfirmationModal = () => (
     <Card>
       <CardGroup style={{ textAlign: 'center' }}>
@@ -70,14 +81,6 @@ const LoginView = ({ onSubmit, t, isRegistered, hideModal, history }) => {
       {renderContent()}
     </PageLayout>
   );
-};
-
-LoginView.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  t: PropTypes.func,
-  isRegistered: PropTypes.bool,
-  history: PropTypes.object,
-  hideModal: PropTypes.func
 };
 
 export default LoginView;

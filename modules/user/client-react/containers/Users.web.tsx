@@ -5,8 +5,8 @@ import { compose } from '@gqlapp/core-common';
 import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { PageLayout, MetaTags } from '@gqlapp/look-client-react';
 
-import UsersFilterView from '../components/UsersFilterView';
-import UsersListView from '../components/UsersListView';
+import UsersFilterView from '../components/UsersFilterView.web';
+import UsersListView from '../components/UsersListView.web';
 import { useUsersWithSubscription } from './withSubscription';
 import {
   withFilterUpdating,

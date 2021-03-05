@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { graphql, withApollo } from 'react-apollo';
 import queryString from 'query-string';
+import { History } from 'history';
+import { ApolloClient } from 'apollo-client';
 
 import { compose } from '@gqlapp/core-common';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { FormError } from '@gqlapp/forms-client-react';
-
 import authentication from '@gqlapp/authentication-client-react';
+
 import ROUTES from '../routes';
-
-import LoginView from '../components/LoginView';
-
+import LoginView from '../components/LoginView.web';
 import LOGIN from '../graphql/Login.graphql';
+// types
+import { loginVariables, login as loginResponse } from '../graphql/__generated__/login';
+import { LoginUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
-const Login = props => {
+interface LoginProps {
+  t: TranslateFunction;
+  history: History;
+  location: Location;
+  login: (values: LoginUserInput) => void;
+  client: ApolloClient<any>;
+}
+
+const Login: React.FunctionComponent<LoginProps> = props => {
   const { t, login, client, history, location } = props;
   const {
     location: { search }
@@ -35,7 +45,7 @@ const Login = props => {
     history.push({ search: '' });
   };
 
-  const onSubmit = async values => {
+  const onSubmit = async (values: LoginUserInput) => {
     try {
       await login(values);
     } catch (e) {
@@ -45,7 +55,7 @@ const Login = props => {
     await authentication.doLogin(client);
 
     const params = queryString.parse(location.search);
-    history.push(params.redirectBack ? params.redirectBack : `${ROUTES.profile}`);
+    history.push(params.redirectBack ? params.redirectBack.toString() : `${ROUTES.profile}`);
   };
 
   return (
@@ -55,20 +65,11 @@ const Login = props => {
   );
 };
 
-Login.propTypes = {
-  login: PropTypes.func,
-  t: PropTypes.func,
-  client: PropTypes.object,
-  history: PropTypes.object,
-  location: PropTypes.object
-};
-
 const LoginWithApollo = compose(
   withApollo,
-  translate('user'),
-  graphql(LOGIN, {
+  graphql<{}, loginResponse, loginVariables, {}>(LOGIN, {
     props: ({ mutate }) => ({
-      login: async ({ usernameOrEmail, password }) => {
+      login: async ({ usernameOrEmail, password }: { usernameOrEmail: string; password: string }) => {
         const {
           data: { login }
         } = await mutate({
@@ -77,7 +78,8 @@ const LoginWithApollo = compose(
         return login;
       }
     })
-  })
+  }),
+  translate('user')
 )(Login);
 
 export default LoginWithApollo;

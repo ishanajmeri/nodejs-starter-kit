@@ -75,7 +75,8 @@ const renderSocialButtons = (buttonsLength, t) => {
   );
 };
 
-const LoginForm = ({ handleSubmit, submitting, errors, values, t, history }) => {
+const LoginForm = props => {
+  const { handleSubmit, submitting, errors, values, t, history } = props;
   const buttonsLength = [facebook.enabled, linkedin.enabled, google.enabled, github.enabled].filter(button => button)
     .length;
   return (
