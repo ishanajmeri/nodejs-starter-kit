@@ -1,4 +1,5 @@
 import React from 'react';
+import { History } from 'history';
 
 import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import {

@@ -1,12 +1,18 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
-
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import { LayoutCenter, PageLayout, Heading, MetaTags, Row, Col } from '@gqlapp/look-client-react';
 
-import ResetPasswordForm from './ResetPasswordForm';
+import ResetPasswordForm from './ResetPasswordForm.web';
+// types
+import { ResetPasswordInput } from '../../../../packages/server/__generated__/globalTypes';
+interface ResetPasswordViewProps {
+  t: TranslateFunction;
+  onSubmit: (values: ResetPasswordInput) => void;
+}
 
-const ResetPasswordView = ({ t, onSubmit }) => {
+const ResetPasswordView: React.FunctionComponent<ResetPasswordViewProps> = props => {
+  const { t, onSubmit } = props;
   const renderContent = () => (
     <>
       <Heading type="1">{t('resetPass.form.title')}</Heading>
@@ -27,11 +33,6 @@ const ResetPasswordView = ({ t, onSubmit }) => {
       </Row>
     </PageLayout>
   );
-};
-
-ResetPasswordView.propTypes = {
-  t: PropTypes.func,
-  onSubmit: PropTypes.func.isRequired
 };
 
 export default ResetPasswordView;
