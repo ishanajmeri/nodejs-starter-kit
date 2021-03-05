@@ -1,16 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withFormik } from 'formik';
+import { withFormik, FormikProps } from 'formik';
 import { NavLink, Link } from 'react-router-dom';
+import { History } from 'history';
 
 import { isFormError, FieldAdapter as Field } from '@gqlapp/forms-client-react';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { required, minLength, validate } from '@gqlapp/validation-common-react';
 import { Icon, Form, RenderField, Alert, Button } from '@gqlapp/look-client-react';
 import { LinkedInButton, GoogleButton, GitHubButton, FacebookButton } from '@gqlapp/authentication-client-react';
 import settings from '@gqlapp/config';
 
 import ROUTES from '../routes';
+// types
+import { LoginUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
 const loginFormSchema = {
   usernameOrEmail: [required, minLength(3)],
@@ -18,7 +20,7 @@ const loginFormSchema = {
 };
 const { github, facebook, linkedin, google } = settings.auth.social;
 
-const renderSocialButtons = (buttonsLength, t) => {
+const renderSocialButtons = (buttonsLength: number, t: TranslateFunction) => {
   return buttonsLength > 2 ? (
     <div
       style={{
@@ -74,8 +76,18 @@ const renderSocialButtons = (buttonsLength, t) => {
     </div>
   );
 };
-
-const LoginForm = props => {
+interface LoginFormProps {
+  t: TranslateFunction;
+  history: History;
+  onSubmit: (values: LoginUserInput) => void;
+  submitting: boolean;
+}
+interface FormValues {
+  usernameOrEmail: string;
+  password: string;
+  errorMsg?: string;
+}
+const LoginForm: React.FC<LoginFormProps & FormikProps<FormValues>> = props => {
   const { handleSubmit, submitting, errors, values, t, history } = props;
   const buttonsLength = [facebook.enabled, linkedin.enabled, google.enabled, github.enabled].filter(button => button)
     .length;
@@ -138,28 +150,20 @@ const LoginForm = props => {
   );
 };
 
-LoginForm.propTypes = {
-  handleSubmit: PropTypes.func,
-  onSubmit: PropTypes.func,
-  submitting: PropTypes.bool,
-  errors: PropTypes.object,
-  values: PropTypes.object,
-  history: PropTypes.object,
-  t: PropTypes.func
-};
-
-const LoginFormWithFormik = withFormik({
+const LoginFormWithFormik = withFormik<LoginFormProps, FormValues>({
   enableReinitialize: true,
   mapPropsToValues: () => ({ usernameOrEmail: '', password: '' }),
 
   handleSubmit(values, { setErrors, props: { onSubmit } }) {
-    onSubmit(values).catch(e => {
+    try {
+      onSubmit(values);
+    } catch (e) {
       if (isFormError(e)) {
         setErrors(e.errors);
       } else {
         throw e;
       }
-    });
+    }
   },
   validate: values => validate(values, loginFormSchema),
   displayName: 'LoginForm' // helps with React DevTools

@@ -1,12 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withFormik } from 'formik';
+import { withFormik, FormikProps } from 'formik';
 
 import { isFormError, FieldAdapter as Field } from '@gqlapp/forms-client-react';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { match, email, minLength, required, validate } from '@gqlapp/validation-common-react';
 import { Icon, Form, RenderField, Button, Alert } from '@gqlapp/look-client-react';
 import settings from '@gqlapp/config';
+
+// types
+import { RegisterUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
 const registerFormSchema = {
   username: [required, minLength(3)],
@@ -14,8 +16,20 @@ const registerFormSchema = {
   password: [required, minLength(settings.auth.password.minLength)],
   passwordConfirmation: [match('password'), required, minLength(settings.auth.password.minLength)]
 };
-
-const RegisterForm = ({ values, handleSubmit, submitting, errors, t }) => {
+interface RegisterFormProps {
+  t: TranslateFunction;
+  submitting: boolean;
+  onSubmit: (values: RegisterUserInput) => void;
+}
+interface FormValues {
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  errorMsg?: string;
+}
+const RegisterForm: React.FC<RegisterFormProps & FormikProps<FormValues>> = props => {
+  const { values, handleSubmit, submitting, errors, t } = props;
   return (
     <Form name="register" onSubmit={handleSubmit}>
       <Field
@@ -60,25 +74,19 @@ const RegisterForm = ({ values, handleSubmit, submitting, errors, t }) => {
   );
 };
 
-RegisterForm.propTypes = {
-  handleSubmit: PropTypes.func,
-  submitting: PropTypes.bool,
-  errors: PropTypes.object,
-  values: PropTypes.object,
-  t: PropTypes.func
-};
-
-const RegisterFormWithFormik = withFormik({
+const RegisterFormWithFormik = withFormik<RegisterFormProps, FormValues>({
   mapPropsToValues: () => ({ username: '', email: '', password: '', passwordConfirmation: '' }),
   validate: values => validate(values, registerFormSchema),
   async handleSubmit(values, { setErrors, props: { onSubmit } }) {
-    onSubmit(values).catch(e => {
+    try {
+      await onSubmit(values);
+    } catch (e) {
       if (isFormError(e)) {
         setErrors(e.errors);
       } else {
         throw e;
       }
-    });
+    }
   },
   enableReinitialize: true,
   displayName: 'SignUpForm' // helps with React DevTools

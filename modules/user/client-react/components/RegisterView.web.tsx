@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { History } from 'history';
 
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import {
   Icon,
   Row,
@@ -16,12 +16,23 @@ import {
 } from '@gqlapp/look-client-react';
 import settings from '@gqlapp/config';
 
-import RegisterForm from './RegisterForm';
+import RegisterForm from './RegisterForm.web';
+// types
+import { RegisterUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
-const RegisterView = ({ t, onSubmit, isRegistered, location, history }) => {
+interface RegisterViewProps {
+  t: TranslateFunction;
+  history: History;
+  location: Location;
+  onSubmit: (values: RegisterUserInput) => void;
+  isRegistered: boolean;
+}
+
+const RegisterView: React.FunctionComponent<RegisterViewProps> = props => {
+  const { t, onSubmit, isRegistered, location, history } = props;
   if (isRegistered && !settings.auth.password.requireEmailConfirmation && location.href.includes('?redirectBack=')) {
     const pushUrl = location.href.split('?redirectBack=')[1];
-    history && history.push(pushUrl);
+    history.push(pushUrl);
   }
 
   const renderConfirmationModal = () => (
@@ -63,14 +74,6 @@ const RegisterView = ({ t, onSubmit, isRegistered, location, history }) => {
       {renderContent()}
     </PageLayout>
   );
-};
-
-RegisterView.propTypes = {
-  t: PropTypes.func,
-  onSubmit: PropTypes.func,
-  isRegistered: PropTypes.bool,
-  location: PropTypes.object,
-  history: PropTypes.object
 };
 
 export default translate('user')(RegisterView);
