@@ -1,17 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withFormik } from 'formik';
+import { withFormik, FormikProps } from 'formik';
 
 import { isFormError, FieldAdapter as Field } from '@gqlapp/forms-client-react';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { Form, RenderField, Alert, NextButton } from '@gqlapp/look-client-react';
 import { required, email, validate } from '@gqlapp/validation-common-react';
+// types
+import { ForgotPasswordInput } from '../../../../packages/server/__generated__/globalTypes';
 
 const forgotPasswordFormSchema = {
   email: [required, email]
 };
-
-const ForgotPasswordForm = ({ handleSubmit, errors, sent, values, t }) => {
+interface ForgotPasswordFormProps {
+  t: TranslateFunction;
+  sent: boolean;
+  onSubmit: (values: ForgotPasswordInput) => Promise<string>;
+}
+interface FormValues {
+  email: string;
+  errorMsg?: string;
+}
+const ForgotPasswordForm: React.FC<ForgotPasswordFormProps & FormikProps<FormValues>> = props => {
+  const { handleSubmit, errors, sent, values, t } = props;
   return (
     <Form name="forgotPassword" onSubmit={handleSubmit}>
       {sent && <Alert color="success">{t('forgotPass.form.submitMsg')}</Alert>}
@@ -32,16 +42,7 @@ const ForgotPasswordForm = ({ handleSubmit, errors, sent, values, t }) => {
   );
 };
 
-ForgotPasswordForm.propTypes = {
-  handleSubmit: PropTypes.func,
-  onSubmit: PropTypes.func,
-  errors: PropTypes.object,
-  sent: PropTypes.bool,
-  values: PropTypes.object,
-  t: PropTypes.func
-};
-
-const ForgotPasswordFormWithFormik = withFormik({
+const ForgotPasswordFormWithFormik = withFormik<ForgotPasswordFormProps, FormValues>({
   enableReinitialize: true,
   mapPropsToValues: () => ({ email: '' }),
   async handleSubmit(values, { setErrors, resetForm, props: { onSubmit } }) {

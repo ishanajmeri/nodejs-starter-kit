@@ -1,11 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
+import { TranslateFunction } from '@gqlapp/i18n-client-react';
 import { PageLayout, Card, CardTitle, Icon, Heading, MetaTags, Row, Col } from '@gqlapp/look-client-react';
-// import { UndoOutlined } from '@ant-design/icons';
 
-import ForgotPasswordForm from './ForgotPasswordForm';
+import ForgotPasswordForm from './ForgotPasswordForm.web';
+// types
+import { ForgotPasswordInput } from '../../../../packages/server/__generated__/globalTypes';
 
-const ForgotPasswordView = ({ onSubmit, t, sent }) => {
+interface ForgotPasswordViewProps {
+  t: TranslateFunction;
+  sent: boolean;
+  onSubmit: (values: ForgotPasswordInput) => void;
+}
+
+const ForgotPasswordView: React.FunctionComponent<ForgotPasswordViewProps> = props => {
+  const { onSubmit, t, sent } = props;
   const renderContent = () => (
     <>
       <Card>
@@ -49,13 +58,6 @@ const ForgotPasswordView = ({ onSubmit, t, sent }) => {
       </Row>
     </PageLayout>
   );
-};
-
-ForgotPasswordView.propTypes = {
-  onSubmit: PropTypes.func,
-  forgotPassword: PropTypes.func,
-  sent: PropTypes.bool,
-  t: PropTypes.func
 };
 
 export default ForgotPasswordView;
