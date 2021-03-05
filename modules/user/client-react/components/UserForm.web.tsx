@@ -22,12 +22,8 @@ import {
 } from '@gqlapp/look-client-react';
 import settings from '@gqlapp/config';
 // types
-import {
-  user_user_user_profile as Profile,
-  user_user_user_auth as Auth,
-  user_user_user as User
-} from '../graphql/__generated__/user';
-import { EditUserInput } from '../../../../packages/server/__generated__/globalTypes';
+import { user_user_user_auth as Auth, user_user_user as User } from '../graphql/__generated__/user';
+import { EditUserInput, ProfileInput, AuthInput } from '../../../../packages/server/__generated__/globalTypes';
 
 const userFormSchema = {
   username: [required, minLength(3)],
@@ -42,7 +38,7 @@ const createUserFormSchema = {
 
 const updateUserFormSchema = {
   ...userFormSchema,
-  password: minLength(settings.auth.password.minLength),
+  password: [minLength(settings.auth.password.minLength)],
   passwordConfirmation: [match('password'), minLength(settings.auth.password.minLength)]
 };
 
@@ -59,8 +55,8 @@ interface FormValues {
   email: string;
   isActive: boolean | null;
   role: string;
-  profile?: Profile | null;
-  auth?: Auth | null;
+  profile?: ProfileInput | null;
+  auth?: AuthInput | null;
   password: string;
   passwordConfirmation: string;
   errorMsg?: string;
@@ -140,7 +136,7 @@ const UserForm: React.FC<UserFormProps & FormikProps<FormValues>> = props => {
         type="text"
         label={t('userEdit.form.field.firstName')}
         value={values.profile.firstName}
-        onChange={(value: Profile) => setFieldValue('profile', { ...values.profile, firstName: value })}
+        onChange={(value: ProfileInput) => setFieldValue('profile', { ...values.profile, firstName: value })}
       />
       <Field
         name="lastName"
@@ -148,7 +144,7 @@ const UserForm: React.FC<UserFormProps & FormikProps<FormValues>> = props => {
         type="text"
         label={t('userEdit.form.field.lastName')}
         value={values.profile.lastName}
-        onChange={(value: Profile) => setFieldValue('profile', { ...values.profile, lastName: value })}
+        onChange={(value: ProfileInput) => setFieldValue('profile', { ...values.profile, lastName: value })}
       />
       {settings.auth.certificate.enabled && (
         <Field

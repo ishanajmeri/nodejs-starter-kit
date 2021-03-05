@@ -1,31 +1,45 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
 import { pick } from 'lodash';
+import { NavigationParams, NavigationScreenProp, NavigationState } from 'react-navigation';
+import { History } from 'history';
+import { match as Match } from 'react-router-dom';
 
 import { compose } from '@gqlapp/core-common';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { FormError } from '@gqlapp/forms-client-react';
 import settings from '@gqlapp/config';
 
-import UserEditView from '../components/UserEditView';
+import UserEditView from '../components/UserEditView.web';
 import UserFormatter from '../helpers/UserFormatter';
 
 import USER_QUERY from '../graphql/UserQuery.graphql';
 import EDIT_USER from '../graphql/EditUser.graphql';
+// types
+import { EditUserInput } from '../../../../packages/server/__generated__/globalTypes';
+import { userVariables, user_user_user as User, user as usersResponse } from '../graphql/__generated__/user';
+import { editUserVariables, editUser as editUserResponse } from '../graphql/__generated__/editUser';
 
-const UserEdit = props => {
+export interface UserEditProps {
+  t: TranslateFunction;
+  history: History;
+  navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+  editUser: (values: EditUserInput) => void;
+  user: User;
+}
+
+const UserEdit: React.FunctionComponent<UserEditProps> = props => {
   const { user, editUser, t, history, navigation } = props;
 
-  const onSubmit = async values => {
+  const onSubmit = async (values: EditUserInput) => {
     let userValues = pick(values, ['username', 'email', 'role', 'isActive', 'password']);
 
-    userValues['profile'] = pick(values.profile, ['firstName', 'lastName', 'avatar']);
+    userValues.profile = pick(values.profile, ['firstName', 'lastName', 'avatar']);
 
     userValues = UserFormatter.trimExtraSpaces(userValues);
 
     if (settings.auth.certificate.enabled) {
-      userValues['auth'] = { certificate: pick(values.auth.certificate, 'serial') };
+      userValues.auth = { certificate: pick(values.auth.certificate, 'serial') };
     }
 
     try {
@@ -46,20 +60,18 @@ const UserEdit = props => {
   return <UserEditView onSubmit={onSubmit} {...props} />;
 };
 
-UserEdit.propTypes = {
-  user: PropTypes.object,
-  editUser: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  navigation: PropTypes.object,
-  history: PropTypes.object,
-  location: PropTypes.object
-};
-
 export default compose(
-  translate('user'),
-  graphql(USER_QUERY, {
+  graphql<
+    {
+      match: Match<{ id: string }>;
+      navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+    },
+    usersResponse,
+    userVariables,
+    {}
+  >(USER_QUERY, {
     options: props => {
-      let id = 0;
+      let id = '0';
       if (props.match) {
         id = props.match.params.id;
       } else if (props.navigation) {
@@ -77,9 +89,9 @@ export default compose(
       };
     }
   }),
-  graphql(EDIT_USER, {
+  graphql<{}, editUserResponse, editUserVariables, {}>(EDIT_USER, {
     props: ({ mutate }) => ({
-      editUser: async input => {
+      editUser: async (input: UserEditView) => {
         const {
           data: { editUser }
         } = await mutate({
@@ -89,5 +101,6 @@ export default compose(
         return editUser;
       }
     })
-  })
+  }),
+  translate('user')
 )(UserEdit);

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { translate } from '@gqlapp/i18n-client-react';
@@ -7,9 +6,20 @@ import { LayoutCenter, PageLayout, Card, Heading, MetaTags, Row, Col } from '@gq
 // eslint-disable-next-line import/no-named-default
 import { USER_ROUTES } from '@gqlapp/user-client-react';
 
-import UserForm from './UserForm';
+import UserForm from './UserForm.web';
+// types
+import { UserEditProps } from '../containers/UserEdit';
+import { EditUserInput } from '../../../../packages/server/__generated__/globalTypes';
+import { currentUser_currentUser as CurrentUser } from '../graphql/__generated__/currentUser';
 
-const UserEditView = ({ loading, user, t, currentUser, onSubmit }) => {
+interface UserEditViewProps extends UserEditProps {
+  loading: boolean;
+  onSubmit: (values: EditUserInput) => void;
+  currentUser: CurrentUser;
+}
+
+const UserEditView: React.FunctionComponent<UserEditViewProps> = props => {
+  const { loading, user, t, currentUser, onSubmit } = props;
   const isNotSelf = !user || (user && user.id !== currentUser.id);
 
   const renderContent = () => (
@@ -52,14 +62,6 @@ const UserEditView = ({ loading, user, t, currentUser, onSubmit }) => {
       )}
     </PageLayout>
   );
-};
-
-UserEditView.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  user: PropTypes.object,
-  currentUser: PropTypes.object,
-  t: PropTypes.func,
-  onSubmit: PropTypes.func
 };
 
 export default translate('user')(UserEditView);

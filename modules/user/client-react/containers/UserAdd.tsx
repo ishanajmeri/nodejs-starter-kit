@@ -14,7 +14,7 @@ import UserAddView from '../components/UserAddView.web';
 import ADD_USER from '../graphql/AddUser.graphql';
 import UserFormatter from '../helpers/UserFormatter';
 // types
-import { EditUserInput, AddUserInput } from '../../../../packages/server/__generated__/globalTypes';
+import { EditUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
 interface UserAddProps {
   t: TranslateFunction;
@@ -27,7 +27,7 @@ const UserAdd: React.FunctionComponent<UserAddProps> = props => {
   const { addUser, t, history, navigation } = props;
 
   const onSubmit = async (values: EditUserInput) => {
-    let userValues = pick(values, ['username', 'email', 'role', 'isActive', 'password', 'id']);
+    let userValues = pick(values, ['username', 'email', 'role', 'isActive', 'password', 'id', 'profile', 'auth']);
 
     userValues.profile = pick(values.profile, ['firstName', 'lastName']);
 
@@ -55,7 +55,6 @@ const UserAdd: React.FunctionComponent<UserAddProps> = props => {
 };
 
 export default compose(
-  translate('user'),
   graphql(ADD_USER, {
     props: ({ mutate }) => ({
       addUser: async (input: EditUserInput) => {
@@ -65,5 +64,6 @@ export default compose(
         return addUser;
       }
     })
-  })
+  }),
+  translate('user')
 )(UserAdd);
