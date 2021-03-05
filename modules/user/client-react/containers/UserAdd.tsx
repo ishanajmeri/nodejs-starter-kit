@@ -1,32 +1,42 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
 import { pick } from 'lodash';
+import { NavigationParams, NavigationScreenProp, NavigationState } from 'react-navigation';
+import { History } from 'history';
 
 import { compose } from '@gqlapp/core-common';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { FormError } from '@gqlapp/forms-client-react';
 import settings from '@gqlapp/config';
 import ROUTES from '../routes';
 
-import UserAddView from '../components/UserAddView';
+import UserAddView from '../components/UserAddView.web';
 import ADD_USER from '../graphql/AddUser.graphql';
 import UserFormatter from '../helpers/UserFormatter';
+// types
+import { EditUserInput, AddUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
-const UserAdd = props => {
+interface UserAddProps {
+  t: TranslateFunction;
+  history: History;
+  navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+  addUser: (values: EditUserInput) => void;
+}
+
+const UserAdd: React.FunctionComponent<UserAddProps> = props => {
   const { addUser, t, history, navigation } = props;
 
-  const onSubmit = async values => {
-    let userValues = pick(values, ['username', 'email', 'role', 'isActive', 'password']);
+  const onSubmit = async (values: EditUserInput) => {
+    let userValues = pick(values, ['username', 'email', 'role', 'isActive', 'password', 'id']);
 
-    userValues['profile'] = pick(values.profile, ['firstName', 'lastName']);
+    userValues.profile = pick(values.profile, ['firstName', 'lastName']);
 
     userValues = UserFormatter.trimExtraSpaces(userValues);
 
     if (settings.auth.certificate.enabled) {
-      userValues['auth'] = { certificate: pick(values.auth.certificate, 'serial') };
+      userValues.auth = { certificate: pick(values.auth.certificate, 'serial') };
     }
-
+    delete userValues.id;
     try {
       await addUser(userValues);
     } catch (e) {
@@ -44,18 +54,11 @@ const UserAdd = props => {
   return <UserAddView onSubmit={onSubmit} {...props} />;
 };
 
-UserAdd.propTypes = {
-  addUser: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  navigation: PropTypes.object,
-  history: PropTypes.object
-};
-
 export default compose(
   translate('user'),
   graphql(ADD_USER, {
     props: ({ mutate }) => ({
-      addUser: async input => {
+      addUser: async (input: EditUserInput) => {
         const { data: addUser } = await mutate({
           variables: { input }
         });

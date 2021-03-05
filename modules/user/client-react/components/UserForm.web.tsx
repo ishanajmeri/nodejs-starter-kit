@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { withFormik } from 'formik';
+import React, { useState, FormEvent } from 'react';
+import { withFormik, FormikProps } from 'formik';
 import { isEmpty } from 'lodash';
 
 import { IMG_ASPECT } from '@gqlapp/listing-common';
 import { isFormError, FieldAdapter as Field } from '@gqlapp/forms-client-react';
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { email, minLength, required, match, validate } from '@gqlapp/validation-common-react';
 import {
   Form,
@@ -22,6 +21,13 @@ import {
   ModalDrawer
 } from '@gqlapp/look-client-react';
 import settings from '@gqlapp/config';
+// types
+import {
+  user_user_user_profile as Profile,
+  user_user_user_auth as Auth,
+  user_user_user as User
+} from '../graphql/__generated__/user';
+import { EditUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
 const userFormSchema = {
   username: [required, minLength(3)],
@@ -40,12 +46,31 @@ const updateUserFormSchema = {
   passwordConfirmation: [match('password'), minLength(settings.auth.password.minLength)]
 };
 
-const UserForm = props => {
+interface UserFormProps {
+  t: TranslateFunction;
+  shouldDisplayRole: boolean;
+  shouldDisplayActive: boolean;
+  onSubmit: (values: EditUserInput) => void;
+  initialValues: User;
+}
+interface FormValues {
+  id: number;
+  username: string;
+  email: string;
+  isActive: boolean | null;
+  role: string;
+  profile?: Profile | null;
+  auth?: Auth | null;
+  password: string;
+  passwordConfirmation: string;
+  errorMsg?: string;
+}
+
+const UserForm: React.FC<UserFormProps & FormikProps<FormValues>> = props => {
   const { values, handleSubmit, errors, setFieldValue, t, shouldDisplayRole, shouldDisplayActive } = props;
   const [load, setLoad] = useState(false);
-  const { username, email, role, isActive, profile, auth } = values;
+  // const { username, email, role, isActive, profile, auth } = values;
 
-  console.log('props', values);
   return (
     <Form name="user" onSubmit={handleSubmit}>
       <Row type="flex" gutter={24}>
@@ -55,14 +80,14 @@ const UserForm = props => {
             component={RenderField}
             type="text"
             label={t('userEdit.form.field.name')}
-            value={username}
+            value={values.username}
           />
           <Field
             name="email"
             component={RenderField}
             type="email"
             label={t('userEdit.form.field.email')}
-            value={email}
+            value={values.email}
           />
         </Col>
         <Col lg={10} xs={24} align="center">
@@ -94,7 +119,7 @@ const UserForm = props => {
           component={RenderSelect}
           type="select"
           label={t('userEdit.form.field.role.label')}
-          value={role}
+          value={values.role}
         >
           <Option value="user">{t('userEdit.form.field.role.user')}</Option>
           <Option value="admin">{t('userEdit.form.field.role.admin')}</Option>
@@ -106,7 +131,7 @@ const UserForm = props => {
           component={RenderCheckBox}
           type="checkbox"
           label={t('userEdit.form.field.active')}
-          checked={isActive}
+          checked={values.isActive}
         />
       )}
       <Field
@@ -114,16 +139,16 @@ const UserForm = props => {
         component={RenderField}
         type="text"
         label={t('userEdit.form.field.firstName')}
-        value={profile.firstName}
-        onChange={value => setFieldValue('profile', { ...profile, firstName: value })}
+        value={values.profile.firstName}
+        onChange={(value: Profile) => setFieldValue('profile', { ...values.profile, firstName: value })}
       />
       <Field
         name="lastName"
         component={RenderField}
         type="text"
         label={t('userEdit.form.field.lastName')}
-        value={profile.lastName}
-        onChange={value => setFieldValue('profile', { ...profile, lastName: value })}
+        value={values.profile.lastName}
+        onChange={(value: Profile) => setFieldValue('profile', { ...values.profile, lastName: value })}
       />
       {settings.auth.certificate.enabled && (
         <Field
@@ -131,14 +156,16 @@ const UserForm = props => {
           component={RenderField}
           type="text"
           label={t('userEdit.form.field.serial')}
-          value={auth && auth.certificate && auth.certificate.serial}
-          onChange={value => setFieldValue('auth', { ...auth, certificate: { ...auth.certificate, serial: value } })}
+          value={values.auth && values.auth.certificate && values.auth.certificate.serial}
+          onChange={(value: Auth) =>
+            setFieldValue('auth', { ...values.auth, certificate: { ...values.auth.certificate, serial: value } })
+          }
         />
       )}
       {errors && errors.errorMsg && <Alert color="error">{errors.errorMsg}</Alert>}
       <Row type="flex" gutter={24}>
         <Col lg={12} md={12} xs={24}>
-          <ModalDrawer buttonText="Reset password" modalTitle="Reset Password" height="auto" ghost={true}>
+          <ModalDrawer buttonText={'Reset password'} modalTitle="Reset Password" height="auto" ghost={true}>
             <ResetPasswordForm {...props} load={load} />
           </ModalDrawer>
         </Col>
@@ -152,7 +179,15 @@ const UserForm = props => {
   );
 };
 
-const ResetPasswordForm = props => {
+interface ResetPasswordFormProps {
+  t: TranslateFunction;
+  values: FormValues;
+  handleSubmit: (e?: FormValues | FormEvent<HTMLFormElement>) => void;
+  hideModal?: () => void;
+  load: boolean;
+}
+
+const ResetPasswordForm: React.FunctionComponent<ResetPasswordFormProps> = props => {
   const { t, values, handleSubmit, load, hideModal } = props;
   const { password, passwordConfirmation } = values;
   const handleOnSubmit = () => {
@@ -181,47 +216,24 @@ const ResetPasswordForm = props => {
     </>
   );
 };
-ResetPasswordForm.propTypes = {
-  t: PropTypes.func,
-  values: PropTypes.object,
-  handleSubmit: PropTypes.func,
-  load: PropTypes.bool,
-  hideModal: PropTypes.func
-};
 
-UserForm.propTypes = {
-  handleSubmit: PropTypes.func,
-  handleChange: PropTypes.func,
-  setFieldValue: PropTypes.func,
-  onSubmit: PropTypes.func,
-  setTouched: PropTypes.func,
-  isValid: PropTypes.bool,
-  shouldDisplayRole: PropTypes.bool,
-  shouldDisplayActive: PropTypes.bool,
-  values: PropTypes.object,
-  errors: PropTypes.object,
-  initialValues: PropTypes.object.isRequired,
-  touched: PropTypes.object,
-  t: PropTypes.func
-};
-
-const UserFormWithFormik = withFormik({
+const UserFormWithFormik = withFormik<UserFormProps, FormValues>({
   mapPropsToValues: values => {
-    const { username, email, role, isActive, profile } = values.initialValues;
     return {
-      username: username,
-      email: email,
-      role: role || 'user',
-      isActive: isActive,
+      id: values.initialValues && values.initialValues.id,
+      username: values.initialValues && values.initialValues.username,
+      email: values.initialValues && values.initialValues.email,
+      role: (values.initialValues && values.initialValues.role) || 'user',
+      isActive: values.initialValues && values.initialValues.isActive,
       password: '',
       passwordConfirmation: '',
       profile: {
-        firstName: profile && profile.firstName,
-        lastName: profile && profile.lastName,
-        avatar: profile && profile.avatar
+        firstName: values.initialValues && values.initialValues.profile && values.initialValues.profile.firstName,
+        lastName: values.initialValues && values.initialValues.profile && values.initialValues.profile.lastName,
+        avatar: values.initialValues && values.initialValues.profile && values.initialValues.profile.avatar
       },
       auth: {
-        ...values.initialValues.auth
+        ...(values.initialValues && values.initialValues.auth)
       }
     };
   },
@@ -230,13 +242,15 @@ const UserFormWithFormik = withFormik({
       delete values.passwordConfirmation;
       delete values.password;
     }
-    await onSubmit(values).catch(e => {
+    try {
+      await onSubmit(values);
+    } catch (e) {
       if (isFormError(e)) {
         setErrors(e.errors);
       } else {
         throw e;
       }
-    });
+    }
   },
   displayName: 'SignUpForm ', // helps with React DevTools
   validate: (values, props) =>

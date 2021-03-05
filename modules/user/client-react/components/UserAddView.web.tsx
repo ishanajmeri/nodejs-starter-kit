@@ -1,14 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { Card, PageLayout, Heading, MetaTags } from '@gqlapp/look-client-react';
+
 import ROUTES from '../routes';
+import UserForm from './UserForm.web';
+// types
+import { EditUserInput } from '../../../../packages/server/__generated__/globalTypes';
 
-import UserForm from './UserForm';
+interface UserAddViewProps {
+  onSubmit: (values: EditUserInput) => void;
+  t: TranslateFunction;
+}
 
-const UserAddView = ({ t, onSubmit }) => {
+const UserAddView: React.FunctionComponent<UserAddViewProps> = props => {
+  const { t, onSubmit } = props;
   const renderContent = () => (
     <Card className="form-card">
       <Link to={`${ROUTES.adminPanel}`}>Back</Link>
@@ -22,15 +29,9 @@ const UserAddView = ({ t, onSubmit }) => {
   return (
     <PageLayout type="forms">
       <MetaTags title={t('userAdd.title')} description={t('userAdd.meta')} />
-
       {renderContent()}
     </PageLayout>
   );
-};
-
-UserAddView.propTypes = {
-  t: PropTypes.func,
-  onSubmit: PropTypes.func
 };
 
 export default translate('user')(UserAddView);
