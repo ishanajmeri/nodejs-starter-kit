@@ -1,17 +1,38 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import { Alert, Message, Spinner } from '@gqlapp/look-client-react';
 import { graphql } from 'react-apollo';
 
-import MobileVerificationFormComponent from '../../components/verification/MobileVerificationFormComponent';
-import Mobile from '../../components/verification/Mobile';
-
+import MobileVerificationFormComponent from '../../components/verification/MobileVerificationFormComponent.web';
+import Mobile from '../../components/verification/Mobile.web';
 import ADD_Mobile from '../../graphql/AddMobile.graphql';
+// types
+import {
+  addUserMobileVariables,
+  addUserMobile as addUserMobileRespose
+} from '../../graphql/__generated__/addUserMobile';
+import { AddMobileInput } from './../../../../../packages/server/__generated__/globalTypes';
 
-class MobileAdd extends Component {
-  constructor(props) {
+export interface MobileAddProps {
+  mobile: {
+    isVerified: boolean;
+  };
+  setvStatus: (value: boolean) => void;
+  addMobile: (mobile: string, otp: number) => Promise<{ otpSent: string; error: string; isVerified: boolean }>;
+}
+
+export interface MobileAddState {
+  loading: boolean;
+  form: boolean;
+  otp: boolean;
+  vStatus: boolean;
+  mobile: any;
+  error?: string | null;
+  mobileNo?: string | null;
+}
+
+class MobileAdd extends React.Component<MobileAddProps, MobileAddState> {
+  constructor(props: MobileAddProps) {
     super(props);
-    this.subscription = null;
     this.state = {
       loading: false,
       form: props.mobile && props.mobile.isVerified ? false : true,
@@ -25,18 +46,19 @@ class MobileAdd extends Component {
     this.onChange = this.onChange.bind(this);
     this.toggleLoading = this.toggleLoading.bind(this);
   }
-
-  setMobile(mobile) {
-    this.setState({ mobile: mobile });
+  public setMobile(mobile: any) {
+    this.setState({ mobile });
     Message.info('Mobile number has been verified.');
   }
 
-  toggleLoading() {
+  public toggleLoading() {
     this.setState({ loading: !this.state.loading });
   }
 
-  onSubmit(addMobile) {
-    return async values => {
+  public onSubmit(
+    addMobile: (mobile: string, otp: number) => Promise<{ otpSent: string; error: string; isVerified: boolean }>
+  ) {
+    return async (values: AddMobileInput) => {
       // To Do call mobile Data check if verified or not
 
       const mobileData = await addMobile(values.mobile, values.otp);
@@ -44,7 +66,6 @@ class MobileAdd extends Component {
         this.setState({ otp: true, mobileNo: values.mobile });
       } else if (!mobileData.otpSent) {
         Message.info('Unable to send OTP.');
-        console.log('unable to send otp!');
       } else {
         // set error or verified
         if (mobileData.error && !mobileData.isVerified) {
@@ -63,9 +84,7 @@ class MobileAdd extends Component {
     };
   }
 
-  async onChange(values) {
-    console.log(values);
-    console.log('submit clicked!');
+  public async onChange(values: AddMobileInput) {
     // fix this
     Message.loading('Please wait...');
     this.setState({ loading: true });
@@ -78,8 +97,7 @@ class MobileAdd extends Component {
   //   // addMobile(values.mobileId, values.dob);
   // }
 
-  render() {
-    console.log(this.props);
+  public render() {
     return (
       <>
         {this.state.loading ? <Spinner size="small" /> : ''}
@@ -92,18 +110,12 @@ class MobileAdd extends Component {
     );
   }
 }
-MobileAdd.propTypes = {
-  vStatus: PropTypes.bool,
-  addMobile: PropTypes.func.isRequired,
-  mobile: PropTypes.object,
-  setvStatus: PropTypes.func
-};
 
-export default graphql(ADD_Mobile, {
+export default graphql<{}, addUserMobileRespose, addUserMobileVariables, {}>(ADD_Mobile, {
   props: ({ mutate }) => ({
-    addMobile: async (mobile, otp) => {
-      let MobileData = await mutate({
-        variables: { input: { mobile: mobile, otp: otp } }
+    addMobile: async (mobile: string, otp: number) => {
+      const MobileData = await mutate({
+        variables: { input: { mobile, otp } }
       });
 
       return MobileData.data.addUserMobile;

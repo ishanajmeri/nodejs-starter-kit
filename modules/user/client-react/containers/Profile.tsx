@@ -1,25 +1,28 @@
 import React from 'react';
-import { graphql } from 'react-apollo';
-import PropTypes from 'prop-types';
 
 import { compose } from '@gqlapp/core-common';
 
-import ProfileView from '../components/ProfileView';
+import ProfileView from '../components/ProfileView.web';
+// types
+import { currentUser_currentUser as CurrentUser } from '../graphql/__generated__/currentUser';
+import { withCurrentUser } from './UserOperations';
 
-import CURRENT_USER_QUERY from '../graphql/CurrentUserQuery.graphql';
+interface ProfileProps {
+  currentUser: CurrentUser;
+}
 
-const Profile = props => {
+const Profile: React.FunctionComponent<ProfileProps> = props => {
   const { currentUser } = props;
   const { profile } = currentUser;
-  const profile_data = {
+  const ProfileData = {
     id: currentUser.id,
     username: currentUser.role,
     role: currentUser.role,
     isActive: currentUser.isActive,
     email: currentUser.id,
     profile: {
-      firstName: profile && profile.firstName,
-      lastName: profile && profile.lastName,
+      firstName: currentUser && profile && profile.firstName,
+      lastName: currentUser && profile && profile.lastName,
       isVerified: true,
       isAvailable: true,
       website: 'www.google.com',
@@ -37,7 +40,7 @@ const Profile = props => {
       image:
         'https://images.unsplash.com/photo-1518806118471-f28b20a1d79d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80',
       isVerified: true,
-      error: null
+      error: 'null'
     },
     addresses: [
       {
@@ -61,7 +64,7 @@ const Profile = props => {
       documentUrl:
         'https://images.unsplash.com/photo-1518806118471-f28b20a1d79d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80',
       isVerified: true,
-      error: null
+      error: 'null'
     },
     verification: {
       isEmailVerified: true,
@@ -78,7 +81,7 @@ const Profile = props => {
         profile: {
           firstName: 'of',
           lastName: 'rebellion',
-          avatar: null
+          avatar: 'null'
         }
       }
     ],
@@ -89,7 +92,7 @@ const Profile = props => {
         profile: {
           firstName: 'of',
           lastName: 'rebellion',
-          avatar: null
+          avatar: 'null'
         }
       }
     ],
@@ -100,7 +103,7 @@ const Profile = props => {
         profile: {
           firstName: 'of',
           lastName: 'rebellion',
-          avatar: null
+          avatar: 'null'
         }
       }
     ],
@@ -111,7 +114,7 @@ const Profile = props => {
         profile: {
           firstName: 'of',
           lastName: 'rebellion',
-          avatar: null
+          avatar: 'null'
         }
       }
     ],
@@ -121,7 +124,7 @@ const Profile = props => {
         platform: 'google',
         portfolioUrl: 'www.google.com'
       }
-    ],
+    ]
     // authCertificate {
     //   serial
     // }
@@ -141,33 +144,8 @@ const Profile = props => {
     //   lnId
     //   displayName
     // }
-    createdAt: currentUser.createdAt,
-    updatedAt: currentUser.updatedAt
   };
-  // console.log('props', props);
-  return <ProfileView {...props} currentUser={profile_data} />;
+  return <ProfileView {...props} currentUser={ProfileData} />;
 };
 
-Profile.propTypes = {
-  currentUser: PropTypes.object
-  // shape({
-  //   id: PropTypes.number,
-  //   role: PropTypes.string,
-  //   isActive: PropTypes.bool,
-  //   createdAt: PropTypes.string,
-  //   updatedAt: PropTypes.string,
-  //   profile: PropTypes.shape({
-  //     firstName: PropTypes.string,
-  //     lastName: PropTypes.string
-  //   })
-  // })
-};
-
-export default compose(
-  graphql(CURRENT_USER_QUERY, {
-    props({ data: { loading, error, currentUser } }) {
-      if (error) throw new Error(error);
-      return { loading, currentUser };
-    }
-  })
-)(Profile);
+export default compose(withCurrentUser)(Profile);

@@ -1,11 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { Icon, Row, Col, Avatar, Divider } from '@gqlapp/look-client-react';
 // import { CardGroup } from '@gqlapp/look-client-react';
 import { ImgUser } from '../../constants/DefaultImages';
+// types
+import { currentUser_currentUser_profile } from '../../graphql/__generated__/currentUser';
 
-const ProfileHeadComponent = ({ profile, description }) => {
+interface ProfileHeadComponentProps {
+  profile: currentUser_currentUser_profile;
+  description: any;
+}
+
+const ProfileHeadComponent: React.FunctionComponent<ProfileHeadComponentProps> = ({ profile, description }) => {
   return (
     <div align="center" style={{ marginBottom: '10px' }}>
       <Avatar size={100} src={profile && profile.avatar ? profile.avatar : ImgUser} />
@@ -61,10 +67,4 @@ const ProfileHeadComponent = ({ profile, description }) => {
     </div>
   );
 };
-
-ProfileHeadComponent.propTypes = {
-  profile: PropTypes.object,
-  description: PropTypes.object
-};
-
 export default ProfileHeadComponent;

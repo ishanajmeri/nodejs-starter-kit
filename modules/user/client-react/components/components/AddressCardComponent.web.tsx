@@ -1,9 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { CardText } from '@gqlapp/look-client-react';
 
-const AddressCardComponent = ({ address, subTitle, index }) => {
+interface AddressCardComponentProps {
+  index: number;
+  address: any;
+  subTitle: string;
+}
+
+const AddressCardComponent: React.FunctionComponent<AddressCardComponentProps> = ({ address, subTitle, index }) => {
   return (
     <div
       style={{
@@ -22,12 +27,6 @@ const AddressCardComponent = ({ address, subTitle, index }) => {
       </CardText>
     </div>
   );
-};
-
-AddressCardComponent.propTypes = {
-  address: PropTypes.object,
-  subTitle: PropTypes.string,
-  index: PropTypes.number
 };
 
 export default AddressCardComponent;

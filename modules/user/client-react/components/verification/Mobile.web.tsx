@@ -1,6 +1,13 @@
 import React from 'react';
 
-const Mobile = ({ mobile }) => {
+interface MobileProps {
+  mobile: {
+    mobile: string;
+    isVerified: boolean;
+  };
+}
+
+const Mobile: React.FunctionComponent<MobileProps> = ({ mobile }) => {
   if (mobile) {
     return (
       <>

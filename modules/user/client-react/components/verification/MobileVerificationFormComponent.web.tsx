@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withFormik } from 'formik';
+import { withFormik, FormikProps } from 'formik';
 
-import { translate } from '@gqlapp/i18n-client-react';
+import { translate, TranslateFunction } from '@gqlapp/i18n-client-react';
 import { FieldAdapter as Field } from '@gqlapp/forms-client-react';
 import { required, phoneNumber, validate } from '@gqlapp/validation-common-react';
 import { Form, RenderField, Button } from '@gqlapp/look-client-react';
@@ -10,8 +9,22 @@ import { Form, RenderField, Button } from '@gqlapp/look-client-react';
 const MobileFormSchema = {
   mobile: [required, phoneNumber]
 };
-
-const MobileForm = ({ otp, values, handleSubmit, submitting, t }) => {
+interface MobileFormProps {
+  mobile: {
+    mobile: string;
+    otp: number;
+  };
+  onSubmit: (mobile: string, otp: number) => Promise<{ otpSent: string; error: string; isVerified: boolean }>;
+  submitting?: boolean;
+  t: TranslateFunction;
+  otp?: number;
+}
+interface FormValues {
+  mobile: string;
+  otp: number;
+}
+const MobileForm: React.FC<MobileFormProps & FormikProps<FormValues>> = props => {
+  const { otp, values, handleSubmit, submitting, t } = props;
   return (
     <Form name="Mobile" onSubmit={handleSubmit}>
       {!otp ? (
@@ -32,20 +45,10 @@ const MobileForm = ({ otp, values, handleSubmit, submitting, t }) => {
   );
 };
 
-MobileForm.propTypes = {
-  handleSubmit: PropTypes.func,
-  onSubmit: PropTypes.func,
-  submitting: PropTypes.bool,
-  values: PropTypes.object,
-  Mobile: PropTypes.object,
-  otp: PropTypes.bool,
-  t: PropTypes.func
-};
-
-const MobileFormWithFormik = withFormik({
+const MobileFormWithFormik = withFormik<MobileFormProps, FormValues>({
   mapPropsToValues: props => ({
     mobile: props.mobile && props.mobile.mobile,
-    otp: props.Mobile && props.Mobile.otp
+    otp: props.mobile && props.mobile.otp
   }),
   validate: values => validate(values, MobileFormSchema),
   handleSubmit(values, { props: { onSubmit } }) {
