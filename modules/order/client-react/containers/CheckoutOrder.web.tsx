@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { History } from 'history';
+import { SubscribeToMoreOptions } from 'apollo-client';
 import { Message } from '@gqlapp/look-client-react';
 
 import { compose } from '@gqlapp/core-common';
@@ -15,8 +16,17 @@ import CheckoutOrderView from '../components/CheckoutOrderView';
 
 import { withGetCart, withPatchOrderState } from './OrderOperations';
 import { subscribeToCart } from './OrderSubscriptions';
+// types
+import { getCart_getCart as GetCart } from '@gqlapp/order-client-react/graphql/__generated__/getCart';
 
-const CheckoutOrder = props => {
+interface CheckoutOrderProps {
+  history: History;
+  subscribeToMore: (options: SubscribeToMoreOptions) => () => void;
+  getCart: GetCart;
+  patchOrderState: (orderId: number, state: string) => Promise<{ v: boolean }>;
+}
+
+const CheckoutOrder: React.FunctionComponent<CheckoutOrderProps> = props => {
   const { history, patchOrderState, getCart, orderPayment, subscribeToMore } = props;
 
   useEffect(() => {
@@ -31,10 +41,10 @@ const CheckoutOrder = props => {
     const amount = orderPayment.razorpayTransactionAmount;
     // const razorpayOrderId = orderPayment.razorpayOrderId;
 
-    let options = {
+    const options = {
       key: 'rzp_test_vmG2tbpGt4EDR2',
       key_secret: 'zOerAsWXjhWe9fr8i38F5g1X',
-      amount: amount, // 2000 paise = INR 20, amount in paisa
+      amount, // 2000 paise = INR 20, amount in paisa
       currency: 'INR',
       name: 'Gems Premium',
       description: 'Payment for your order.',
@@ -61,7 +71,7 @@ const CheckoutOrder = props => {
       }
     };
 
-    let rzp = new window.Razorpay(options);
+    const rzp = new window.Razorpay(options);
     rzp.open();
   };
 
@@ -103,12 +113,10 @@ const CheckoutOrder = props => {
     }
   }
 
-  // console.log('props', props);
   return (
     <>
       <CheckoutOrderView openCheckout={openCheckout} onSubmit={onSubmit} {...props} />
       {/* <div ref={el => (this.instance = el)} /> */}
-
       <form onSubmit={onSubmit} id="rp_custom" hidden>
         <input type="text" id="razorpay_order_id" />
         <input type="text" id="razorpay_signature" />
@@ -117,16 +125,6 @@ const CheckoutOrder = props => {
       </form>
     </>
   );
-};
-
-CheckoutOrder.propTypes = {
-  getCart: PropTypes.object,
-  deleteOrderDetail: PropTypes.func,
-  editOrder: PropTypes.func,
-  subscribeToMore: PropTypes.func,
-  history: PropTypes.object,
-  patchOrderState: PropTypes.func,
-  orderPayment: PropTypes.object
 };
 
 export default compose(
