@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { History } from 'history';
 
 import { PageLayout, Icon, Row, Col, Button, Result, MetaTags } from '@gqlapp/look-client-react';
 import { HOME_ROUTES } from '@gqlapp/home-client-react';
@@ -8,7 +8,11 @@ import settings from '@gqlapp/config';
 
 const EMAIL_VERIFIED_GIF = 'https://media.tenor.com/images/90170b1a23f28719c66f43fc435bf076/tenor.gif';
 
-const LogoutPageView = props => {
+interface EmailVerifiedPageViewProps {
+  history: History;
+}
+
+const EmailVerifiedPageView: React.FunctionComponent<EmailVerifiedPageViewProps> = props => {
   const { history } = props;
   return (
     <PageLayout>
@@ -86,8 +90,4 @@ const LogoutPageView = props => {
   );
 };
 
-LogoutPageView.propTypes = {
-  history: PropTypes.object
-};
-
-export default LogoutPageView;
+export default EmailVerifiedPageView;

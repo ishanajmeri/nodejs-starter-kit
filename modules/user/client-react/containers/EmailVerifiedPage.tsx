@@ -1,8 +1,13 @@
 import React from 'react';
+import { History } from 'history';
 
 import EmailVerifiedPageView from '../components/EmailVerifiedPageView';
 
-const EmailVerifiedPage = props => {
+interface EmailVerifiedPageProps {
+  history: History;
+}
+
+const EmailVerifiedPage: React.FunctionComponent<EmailVerifiedPageProps> = props => {
   return <EmailVerifiedPageView {...props} />;
 };
 
