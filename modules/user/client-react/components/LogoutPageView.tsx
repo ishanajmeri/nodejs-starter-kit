@@ -1,6 +1,6 @@
 /* eslint-disable import/no-named-default */
 import React from 'react';
-import PropTypes from 'prop-types';
+import { History } from 'history';
 
 import { MetaTags, PageLayout, Icon, Row, Col, Button, Result } from '@gqlapp/look-client-react';
 import { HOME_ROUTES } from '@gqlapp/home-client-react';
@@ -10,7 +10,11 @@ import settings from '@gqlapp/config';
 const LOGOUT_PAGE_GIF =
   'https://res.cloudinary.com/nodejs-starter-kit/image/upload/v1601824605/cwy15kfennovwu6j4noe.webp';
 
-const LogoutPageView = props => {
+interface LogoutPageViewProps {
+  history: History;
+}
+
+const LogoutPageView: React.FunctionComponent<LogoutPageViewProps> = props => {
   const { history } = props;
   return (
     <PageLayout>
@@ -86,10 +90,6 @@ const LogoutPageView = props => {
       </div>
     </PageLayout>
   );
-};
-
-LogoutPageView.propTypes = {
-  history: PropTypes.object
 };
 
 export default LogoutPageView;
