@@ -32,7 +32,7 @@ const UserEdit: React.FunctionComponent<UserEditProps> = props => {
   const { user, editUser, t, history, navigation } = props;
 
   const onSubmit = async (values: EditUserInput) => {
-    let userValues = pick(values, ['username', 'email', 'role', 'isActive', 'password']);
+    let userValues = pick(values, ['username', 'email', 'role', 'isActive', 'password', 'profile', 'auth']);
 
     userValues.profile = pick(values.profile, ['firstName', 'lastName', 'avatar']);
 
@@ -91,7 +91,7 @@ export default compose(
   }),
   graphql<{}, editUserResponse, editUserVariables, {}>(EDIT_USER, {
     props: ({ mutate }) => ({
-      editUser: async (input: UserEditView) => {
+      editUser: async (input: EditUserInput) => {
         const {
           data: { editUser }
         } = await mutate({

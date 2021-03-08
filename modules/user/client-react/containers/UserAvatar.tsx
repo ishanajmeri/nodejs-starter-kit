@@ -1,13 +1,24 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import PropTypes from 'prop-types';
 
 import { compose } from '@gqlapp/core-common';
 import { Avatar, Icon } from '@gqlapp/look-client-react';
 
 import CURRENT_USER_AVATAR_QUERY from '../graphql/CurrentUserQuery.graphql';
+// types
+import {
+  currentUser_currentUser as CurrentUser,
+  currentUser as currentUserResponse
+} from '../graphql/__generated__/currentUser';
 
-const UserAvatar = props => {
+interface UserAvatarProps {
+  currentUser: CurrentUser;
+  currentUserLoading: boolean;
+  size: string;
+  shape: string;
+}
+
+const UserAvatar: React.FunctionComponent<UserAvatarProps> = props => {
   const profile = !props.currentUserLoading && props.currentUser && props.currentUser.profile;
 
   return (
@@ -15,17 +26,12 @@ const UserAvatar = props => {
   );
 };
 
-UserAvatar.propTypes = {
-  currentUserLoading: PropTypes.bool,
-  currentUser: PropTypes.object,
-  size: PropTypes.number,
-  shape: PropTypes.string
-};
-
 export default compose(
-  graphql(CURRENT_USER_AVATAR_QUERY, {
+  graphql<{}, currentUserResponse, {}, {}>(CURRENT_USER_AVATAR_QUERY, {
     props({ data: { loading, error, currentUser } }) {
-      if (error) throw new Error(error);
+      if (error) {
+        throw new Error(error.message);
+      }
       return { currentUserLoading: loading, currentUser };
     }
   })
