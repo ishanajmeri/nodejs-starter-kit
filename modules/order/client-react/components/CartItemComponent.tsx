@@ -69,9 +69,9 @@ const CartItemComponent: React.FunctionComponent<CartItemComponentProps> = props
               {listing &&
                 listing.listingHighlight &&
                 listing.listingHighlight.length > 0 &&
-                listing.listingHighlight.map(lH => (
+                listing.listingHighlight.map((lH, index) => (
                   <>
-                    <Badge status="processing" text={lH.highlight} />
+                    <Badge status="processing" text={lH.highlight} key={index} />
                     <br />
                   </>
                 ))}
