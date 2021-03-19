@@ -12,3 +12,5 @@ const VerificationIconComponent: React.FunctionComponent<VerificationIconCompone
     return <Icon type="CloseCircleTwoTone" twoToneColor="#52c41a" />;
   }
 };
+
+export default VerificationIconComponent;
